@@ -1,0 +1,29 @@
+.sidebar {
+  background-color: $light;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid $outline;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  .icons {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    .icon {
+      font-size: 2em;
+      cursor: pointer;
+      color: $icon;
+      .fa-icon {
+        transition: 0.1s;
+      }
+      :hover {
+        color: $iconTransition;
+      }
+    }
+  }
+}
