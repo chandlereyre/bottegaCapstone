@@ -1,16 +1,24 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import logo from "../assets/chat.png";
 
 export default function () {
   return (
     <div className="sidebar">
+      <div id="sidebar-logo">
+        <img src={logo}></img>
+      </div>
       <div className="icons">
-        <div className="icon">
-          <FontAwesomeIcon icon="fa-regular fa-comment" className="fa-icon" />
-        </div>
-        <div className="icon">
-          <FontAwesomeIcon icon="fa-regular fa-user" className="fa-icon" />
-        </div>
+        <NavLink to="/home" className="icon">
+          <FontAwesomeIcon icon="fa-solid fa-comment" className="fa-icon" />
+        </NavLink>
+        <NavLink to="/profile" className="icon">
+          <FontAwesomeIcon icon="fa-solid fa-user" className="fa-icon" />
+        </NavLink>
+      </div>
+      <div id="sidebar-logout" className="icon">
+        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
       </div>
     </div>
   );

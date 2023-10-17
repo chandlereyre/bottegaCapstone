@@ -1,9 +1,7 @@
 .messages {
-  background-color: $offWhite;
   height: calc(100% - 4em);
   padding: 2em;
-  border-right: 1px solid $outline;
-  box-shadow: 10px 0px 300px 20px $shadow;
+  border-right: 1px solid $lightGrey;
   position: sticky;
   top: 0;
   z-index: -1;

@@ -4,8 +4,8 @@ import { NavLink } from "react-router-dom";
 function Login() {
   return (
     <div className="login-wrapper">
-      <div className="login-modal">
-        <h1>Log in</h1>
+      <div className="login-modal signup-modal">
+        <h1>Sign up</h1>
         <input
           type="text"
           placeholder="username"
@@ -16,19 +16,24 @@ function Login() {
           placeholder="password"
           className="login-input"
         ></input>
+        <input
+          type="password"
+          placeholder="confirm password"
+          className="login-input"
+        ></input>
         <button type="submit" className="login-button">
-          Log in
+          Create account
         </button>
         <div className="divider">
           <span className="line"></span>
           <p>OR</p>
           <span className="line"></span>
         </div>
-        <NavLink to="/signup" className="link">
-          Don't have an account?
+        <NavLink to="/login" className="link">
+          Already have an account?
         </NavLink>
       </div>
-      <div className="modal-bg login-bg"></div>
+      <div className="modal-bg signup-bg"></div>
     </div>
   );
 }

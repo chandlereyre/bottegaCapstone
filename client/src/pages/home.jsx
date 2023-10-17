@@ -4,7 +4,7 @@ import Messages from "../components/messages";
 
 function Home() {
   return (
-    <div className="home">
+    <div className="main-wrapper">
       <div>
         <Sidebar></Sidebar>
       </div>

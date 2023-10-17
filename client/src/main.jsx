@@ -1,10 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faComment, faUser } from "@fortawesome/free-regular-svg-icons";
+import {
+  faRightFromBracket,
+  faComment,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import App from "./App.jsx";
 
-library.add(faComment, faUser);
+library.add(faComment, faUser, faRightFromBracket);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -4,13 +4,13 @@
 body {
   margin: 0px;
   font-family: "Lato  ", sans-serif;
-  background-color: $lightGrey;
+  background-color: $offWhite;
 }
 #root {
   text-align: center;
 }
 
-.home {
+.main-wrapper {
   width: 100vw;
   height: 150vh;
   display: grid;
