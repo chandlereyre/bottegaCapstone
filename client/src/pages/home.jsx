@@ -2,11 +2,13 @@ import React from "react";
 import Sidebar from "../components/sidebar";
 import Messages from "../components/messages";
 
-function Home() {
+function Home(props) {
   return (
     <div className="main-wrapper">
       <div>
-        <Sidebar></Sidebar>
+        <Sidebar
+          handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
+        />
       </div>
       <div>
         <Messages></Messages>

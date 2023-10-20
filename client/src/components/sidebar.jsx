@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../assets/chat.png";
 
-export default function () {
+export default function (props) {
   return (
     <div className="sidebar">
       <div id="sidebar-logo">
@@ -18,7 +18,10 @@ export default function () {
         </NavLink>
       </div>
       <div id="sidebar-logout" className="icon">
-        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
+        <FontAwesomeIcon
+          icon="fa-solid fa-right-from-bracket"
+          onClick={() => props.handleSuccessfulLogout()}
+        />
       </div>
     </div>
   );
