@@ -14,7 +14,7 @@ body {
   width: 100vw;
   height: 150vh;
   display: grid;
-  grid-template-columns: 80px 280px 1fr;
+  grid-template-columns: 80px 1fr;
   position: fixed;
 }
 
@@ -26,4 +26,9 @@ body {
   font-size: 2em;
   line-height: 2.5em;
   font-family: "Gabarito", sans-serif;
+}
+
+.home {
+  display: grid;
+  grid-template-columns: 280px 1fr;
 }

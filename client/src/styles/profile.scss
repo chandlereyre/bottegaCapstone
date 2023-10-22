@@ -1,0 +1,17 @@
+.profile-wrapper {
+  padding: 3rem;
+  display: grid;
+  grid-template-rows: 1fr 0.5fr 0.5fr 4fr;
+  width: 100%;
+  .profile-picture {
+    height: 200px;
+    img {
+      height: 200px;
+      border-radius: 50%;
+    }
+  }
+  .profile-input {
+    width: 80%;
+    margin-right: 10rem;
+  }
+}

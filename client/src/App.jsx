@@ -2,10 +2,9 @@ import "./styles/main.scss";
 import { React, Component } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/home";
+import Main from "./pages/main";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-import Profile from "./pages/profile";
 
 class App extends Component {
   constructor() {
@@ -89,7 +88,10 @@ class App extends Component {
               path="/home"
               element={
                 this.state.loggedInStatus ? (
-                  <Home handleSuccessfulLogout={this.handleSuccessfulLogout} />
+                  <Main
+                    handleSuccessfulLogout={this.handleSuccessfulLogout}
+                    type={"home"}
+                  />
                 ) : (
                   <Navigate to="/login" replace />
                 )
@@ -99,8 +101,9 @@ class App extends Component {
               path="/profile"
               element={
                 this.state.loggedInStatus ? (
-                  <Profile
+                  <Main
                     handleSuccessfulLogout={this.handleSuccessfulLogout}
+                    type={"profile"}
                   />
                 ) : (
                   <Navigate to="/login" replace />
