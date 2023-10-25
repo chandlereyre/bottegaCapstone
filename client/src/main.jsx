@@ -7,10 +7,18 @@ import {
   faUser,
   faPaperPlane,
   faPenToSquare,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import App from "./App.jsx";
 
-library.add(faComment, faUser, faRightFromBracket, faPaperPlane, faPenToSquare);
+library.add(
+  faComment,
+  faUser,
+  faRightFromBracket,
+  faPaperPlane,
+  faPenToSquare,
+  faX
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

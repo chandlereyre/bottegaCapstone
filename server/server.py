@@ -56,4 +56,10 @@ def updateAccount():
     # TODO update account
     return "account updated"
 
+@app.route("create-chat", methods = ['POST'])
+def createChat():
+    # TODO create chat
+    # NEEDS userFrom, userTo, message
+    return "chat created"
+
 app.run(debug=True)

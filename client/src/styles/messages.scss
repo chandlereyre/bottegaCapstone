@@ -14,20 +14,41 @@
   align-items: center;
   .icon {
     font-size: 1.5rem;
-    &:hover {
-      color: $buttonTransition;
+    :hover {
+      color: $accent;
     }
   }
 }
 
+.divider {
+  width: 90%;
+  border-bottom: 2px solid $lightGrey;
+  margin-bottom: 2rem;
+}
+
 .message {
   display: grid;
-  grid-template-columns: 1fr 7fr;
-  gap: 10px;
+  grid-template-columns: 40px 1fr;
+  gap: 1rem;
   width: 100%;
   height: 60px;
   text-align: left;
-  .personName {
+  cursor: pointer;
+  .person-name {
     font-weight: bold;
+  }
+  .message-profile-pic {
+    width: 100%;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $lightGrey;
+
+    img {
+      width: 100%;
+      border-radius: 50%;
+    }
+  }
+  .text {
+    color: $messageGrey;
   }
 }

@@ -54,7 +54,8 @@ body {
   border-bottom: 1px solid $outline;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 1rem;
 }
 
 .chatbox-wrapper {
@@ -96,5 +97,13 @@ body {
   &:hover {
     cursor: pointer;
     color: $buttonTransition;
+  }
+}
+
+.chat-close {
+  cursor: pointer;
+  color: $messageGrey;
+  &:hover {
+    color: $accent;
   }
 }

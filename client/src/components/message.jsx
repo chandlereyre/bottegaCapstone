@@ -1,12 +1,21 @@
-export default function () {
+export default function Message({
+  profilePic,
+  userName,
+  previewMessage,
+  handleUpdateChat,
+  setChat,
+}) {
   return (
-    <div className="message">
-      <div className="chatimg">
-        <div>Image Here</div>
+    <div
+      className="message"
+      onClick={() => handleUpdateChat(userName, setChat)}
+    >
+      <div className="message-profile-pic">
+        <img src={profilePic} alt=""></img>
       </div>
-      <div className="content">
-        <div className="personName">Chandler Eyre</div>
-        <div className="text">Hey man, what's up?</div>
+      <div className="message-content">
+        <div className="person-name">{userName}</div>
+        <div className="text">{previewMessage}</div>
       </div>
     </div>
   );
