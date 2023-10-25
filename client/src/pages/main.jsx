@@ -1,18 +1,15 @@
 import React from "react";
 import Sidebar from "../components/sidebar";
-import Messages from "../components/messages";
+import MessageList from "../components/messageList";
 import Profile from "../components/profile";
+import Chat from "../components/chat";
 
 function Render({ type }) {
   if (type == "home") {
     return (
       <div className="home">
-        <div>
-          <Messages></Messages>
-        </div>
-        <div>
-          <div className="title">Home</div>
-        </div>
+        <MessageList />
+        <Chat otherUser={"Chandler Eyre"} />
       </div>
     );
   }

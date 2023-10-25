@@ -123,6 +123,20 @@ class App extends Component {
                 )
               }
             />
+            <Route
+              path="/login/accountcreated"
+              element={
+                this.state.loggedInStatus ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <Login
+                    handleSuccessfulLogin={this.handleSuccessfulLogin}
+                    handleUnsuccessfulLogin={this.handleUnsuccessfulLogin}
+                    message={"Account created"}
+                  />
+                )
+              }
+            />
             <Route path="/signup" element={<Signup />} />
           </Routes>
         </BrowserRouter>

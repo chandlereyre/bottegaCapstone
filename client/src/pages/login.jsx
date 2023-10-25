@@ -1,5 +1,5 @@
 import { React, Component } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 
 class Login extends Component {
@@ -9,6 +9,7 @@ class Login extends Component {
     this.state = {
       username: "",
       password: "",
+      message: this.props.message,
     };
 
     this.handleLogIn = this.handleLogIn.bind(this);
@@ -54,7 +55,7 @@ class Login extends Component {
           <input
             type="text"
             placeholder="username"
-            className="login-input"
+            className="input"
             name="username"
             onChange={this.handleChange}
             value={this.state.username}
@@ -62,7 +63,7 @@ class Login extends Component {
           <input
             type="password"
             placeholder="password"
-            className="login-input"
+            className="input"
             name="password"
             onChange={this.handleChange}
             value={this.state.password}
@@ -84,6 +85,11 @@ class Login extends Component {
           </NavLink>
         </div>
         <div className="modal-bg login-bg"></div>
+        {this.state.message == "Account created" ? (
+          <div className="success-message">
+            <p>{this.state.message}!</p>
+          </div>
+        ) : null}
       </div>
     );
   }

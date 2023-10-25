@@ -43,10 +43,17 @@ def logout():
 
 @app.route("/create-account", methods = ['POST'])
 def createAccount():
-    # TODO create account
-    # check if username already exists
-    # if so, return message to be handled by client
-    # if not, create account with given username, password
-    return 'account created'
+    username = request.json['username']
+    password = request.json['password']
+    if db.users.find({'username': username}):
+        return "user already exists"
+    else:
+        db.insert_one({'username': username, 'password': password})
+        return 'account created'
+
+@app.route("/update-account", methods = ['POST'])
+def updateAccount():
+    # TODO update account
+    return "account updated"
 
 app.run(debug=True)

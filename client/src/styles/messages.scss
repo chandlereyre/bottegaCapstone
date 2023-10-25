@@ -1,10 +1,23 @@
-.messages {
+.messagelist-wrapper {
   height: calc(100% - 4em);
   padding: 2em;
   border-right: 1px solid $lightGrey;
   position: sticky;
   top: 0;
-  z-index: -1;
+  z-index: 1;
+}
+
+.top-bar {
+  display: flex;
+  height: 5rem;
+  justify-content: space-between;
+  align-items: center;
+  .icon {
+    font-size: 1.5rem;
+    &:hover {
+      color: $buttonTransition;
+    }
+  }
 }
 
 .message {

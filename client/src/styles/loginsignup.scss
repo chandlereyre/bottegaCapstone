@@ -28,16 +28,6 @@
   padding-bottom: 2em;
 }
 
-.login-input {
-  height: 2em;
-  border: none;
-  background-color: $lightGrey;
-  border-radius: 0.75em;
-  padding: 0.3em;
-  padding-left: 1em;
-  outline: none;
-}
-
 .login-button {
   border: none;
   padding: 1em;
@@ -49,7 +39,7 @@
   transition: 0.05s;
   &:hover {
     cursor: pointer;
-    color: $iconTransition;
+    color: $buttonTransition;
   }
 }
 
@@ -91,4 +81,28 @@
   margin-right: 7em;
   margin-top: 2em;
   background-color: $button;
+}
+
+.error-message {
+  color: red;
+  position: absolute;
+  margin: 60vh auto 0px auto;
+  z-index: 2;
+  background-color: $offWhite;
+  padding: 0px 1rem;
+  border-radius: 1rem;
+  font-weight: bold;
+  box-shadow: -5px 5px 40px $shadow;
+}
+
+.success-message {
+  color: #16ca4c;
+  position: absolute;
+  margin: 60vh auto 0px auto;
+  z-index: 2;
+  background-color: $offWhite;
+  padding: 0px 1rem;
+  border-radius: 1rem;
+  font-weight: bold;
+  box-shadow: -5px 5px 40px $shadow;
 }
