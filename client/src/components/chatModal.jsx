@@ -4,8 +4,14 @@ import React from "react";
 export default function chatModal({ toggleModal, setModal, modal }) {
   return (
     <div>
-      <div className="chat-modal-wrapper">
-        <div className="chat-modal">
+      <div
+        className="chat-modal-wrapper"
+        onClick={() => toggleModal(setModal, modal)}
+      >
+        <div
+          className="chat-modal"
+          onClick={(event) => event.stopPropagation()}
+        >
           <div className="modal-top-bar">
             <div className="title">New Message</div>
             <FontAwesomeIcon

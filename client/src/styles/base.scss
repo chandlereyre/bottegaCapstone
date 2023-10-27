@@ -118,6 +118,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: $shadow;
+  z-index: 4;
 }
 
 .chat-modal {
@@ -128,6 +129,7 @@ body {
   background-color: $offWhite;
   border-radius: 1rem;
   padding: 1rem 2rem;
+  z-index: 5;
 }
 
 .modal-top-bar {
