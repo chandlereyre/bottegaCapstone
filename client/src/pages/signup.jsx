@@ -16,6 +16,13 @@ class Signup extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+
+  handleKeyPress(event) {
+    if (event.key === "Enter") {
+      this.handleSubmit();
+    }
   }
 
   handleChange(event) {
@@ -25,7 +32,7 @@ class Signup extends Component {
     });
   }
 
-  handleSubmit(navigate) {
+  handleSubmit() {
     if (this.state.password != this.state.confirmPassword) {
       this.setState({ errorMessage: "Passwords must match" });
     } else {
@@ -37,7 +44,7 @@ class Signup extends Component {
           password: this.state.password,
         },
         withCredentials: true,
-      }).then((response) => {
+      }).then(() => {
         this.setState({
           redirect: true,
         });
@@ -76,6 +83,7 @@ class Signup extends Component {
             name="confirmPassword"
             onChange={this.handleChange}
             value={this.state.confirmPassword}
+            onKeyDown={this.handleKeyPress}
           ></input>
           <button
             type="submit"

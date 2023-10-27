@@ -14,6 +14,13 @@ class Login extends Component {
 
     this.handleLogIn = this.handleLogIn.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+
+  handleKeyPress(event) {
+    if (event.key === "Enter") {
+      this.handleLogIn();
+    }
   }
 
   handleChange(event) {
@@ -67,6 +74,7 @@ class Login extends Component {
             name="password"
             onChange={this.handleChange}
             value={this.state.password}
+            onKeyDown={this.handleKeyPress}
           ></input>
           <button
             type="submit"
