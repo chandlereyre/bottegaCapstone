@@ -44,10 +44,14 @@ class Signup extends Component {
           password: this.state.password,
         },
         withCredentials: true,
-      }).then(() => {
-        this.setState({
-          redirect: true,
-        });
+      }).then((response) => {
+        if (response.data == "user already exists") {
+          this.setState({ errorMessage: response.data });
+        } else if (response.data == "account created") {
+          this.setState({
+            redirect: true,
+          });
+        }
       });
     }
   }
@@ -103,7 +107,7 @@ class Signup extends Component {
           </NavLink>
         </div>
         <div className="modal-bg signup-bg"></div>
-        {this.state.errorMessage == "Passwords must match" ? (
+        {this.state.errorMessage ? (
           <div className="error-message">
             <p>{this.state.errorMessage}</p>
           </div>

@@ -46,6 +46,7 @@ class Login extends Component {
           this.props.handleSuccessfulLogin();
         } else {
           this.props.handleUnsuccessfulLogin();
+          this.setState({ message: response.data });
         }
       })
       .catch((error) => {
@@ -96,6 +97,11 @@ class Login extends Component {
         {this.state.message == "Account created" ? (
           <div className="success-message">
             <p>{this.state.message}!</p>
+          </div>
+        ) : null}
+        {this.state.message && this.state.message != "Account created" ? (
+          <div className="error-message">
+            <p>{this.state.message}</p>
           </div>
         ) : null}
       </div>

@@ -14,7 +14,7 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
 
 # mongo init
-db = MongoClient().chatApp
+db = MongoClient("localhost", 27017).chatApp
 
 # Create Flask-Session
 server_session = Session(app)
@@ -25,10 +25,14 @@ def login():
         username = request.json['username']
         password = request.json['password']
         # check if username & password combination exists in mongoDB
-        if db.users.find({'username': username, 'password': password}):
+        if db.user.find_one({'username': username, 'password': password}):
             # add user to session
             session['username'] = username
             return 'session created'
+        elif db.user.find_one({'username': username}):
+            return 'incorrect password'
+        else:
+            return 'user not found'
     if request.method == 'GET':
         if 'username' in session:
             return 'true'
@@ -45,10 +49,10 @@ def logout():
 def createAccount():
     username = request.json['username']
     password = request.json['password']
-    if db.users.find({'username': username}):
+    if db.user.find_one({'username': username}):
         return "user already exists"
     else:
-        db.insert_one({'username': username, 'password': password})
+        db.user.insert_one({'username': username, 'password': password})
         return 'account created'
 
 @app.route("/update-account", methods = ['POST'])
