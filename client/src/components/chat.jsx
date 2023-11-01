@@ -4,6 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 
 export default function Chat({ otherUser, handleUpdateChat, setChat }) {
+  useEffect(() => {
+    this.socket = io("http://localhost:5000"); //TODO figure out URL
+
+    this.socket.on("chatMessage", (data) => {
+      console.log(data);
+    });
+  });
+
+  // TODO close connection on unmount
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
