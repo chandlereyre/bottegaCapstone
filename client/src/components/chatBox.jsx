@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import axios from "axios";
 
-export default function chatBox() {
+export default function chatBox({ sendMessage }) {
   const [message, setMessage] = useState("");
 
   function handleChange(event) {
@@ -21,7 +21,7 @@ export default function chatBox() {
         onChange={handleChange}
         value={message}
       ></input>
-      <button className="chat-button" onClick={handleSubmit}>
+      <button className="chat-button" onClick={sendMessage}>
         Send
       </button>
     </div>

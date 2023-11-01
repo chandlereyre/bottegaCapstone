@@ -13,7 +13,7 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # mongo init
 db = MongoClient("localhost", 27017).chatApp
@@ -68,9 +68,10 @@ def createChat():
     # NEEDS userFrom, userTo, message
     return "chat created"
 
-@socketio.on('message')
+@socketio.on('chatMessage')
 def handle_message(data):
     print('received message: ' + data)
+    socketio.emit('chatMessage', {'message': 'Data recieved'})
 
 if __name__ == '__main__':  
     socketio.run(app)
