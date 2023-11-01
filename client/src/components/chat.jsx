@@ -12,6 +12,9 @@ export default class Chat extends Component {
   componentDidMount() {
     this.socket = io("http://localhost:5000");
 
+    // join room with other user
+    // this.socket.emit("joinRoom", this.props.otherUser);
+
     this.socket.on("chatMessage", (data) => {
       console.log(data);
     });
@@ -21,9 +24,8 @@ export default class Chat extends Component {
     this.socket.disconnect();
   }
 
-  sendMessage = () => {
-    console.log("message sent");
-    this.socket.emit("chatMessage", "message from react");
+  sendMessage = (message) => {
+    this.socket.emit("chatMessage", message);
   };
 
   render() {
@@ -33,7 +35,7 @@ export default class Chat extends Component {
           <div className="title">Chat with {this.props.otherUser}</div>
           <div
             className="chat-close"
-            onClick={() => handleUpdateChat("", setChat)}
+            onClick={() => this.props.handleUpdateChat("", this.props.setChat)}
           >
             <FontAwesomeIcon icon="fa-solid fa-x" />
           </div>

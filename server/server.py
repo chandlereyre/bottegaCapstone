@@ -3,7 +3,7 @@ from flask import Flask, request, session
 from flask_cors import CORS
 from flask_session import Session
 from pymongo import MongoClient
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 
 # app config
 app = Flask(__name__)
@@ -67,6 +67,8 @@ def createChat():
     # TODO create chat
     # NEEDS userFrom, userTo, message
     return "chat created"
+
+@socketio.on('joinRoom')
 
 @socketio.on('chatMessage')
 def handle_message(data):

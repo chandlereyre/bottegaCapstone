@@ -21,7 +21,7 @@ export default function chatBox({ sendMessage }) {
         onChange={handleChange}
         value={message}
       ></input>
-      <button className="chat-button" onClick={sendMessage}>
+      <button className="chat-button" onClick={() => sendMessage(message)}>
         Send
       </button>
     </div>
