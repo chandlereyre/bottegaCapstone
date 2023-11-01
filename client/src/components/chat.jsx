@@ -1,6 +1,7 @@
 import React from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import io from "socket.io-client";
 
 export default function Chat({ otherUser, handleUpdateChat, setChat }) {
   return (
