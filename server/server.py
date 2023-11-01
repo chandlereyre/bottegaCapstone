@@ -3,6 +3,7 @@ from flask import Flask, request, session
 from flask_cors import CORS
 from flask_session import Session
 from pymongo import MongoClient
+from flask_socketio import SocketIO
 
 # app config
 app = Flask(__name__)
@@ -12,6 +13,7 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
+socketio = SocketIO(app)
 
 # mongo init
 db = MongoClient("localhost", 27017).chatApp
@@ -66,4 +68,4 @@ def createChat():
     # NEEDS userFrom, userTo, message
     return "chat created"
 
-app.run(debug=True)
+socketio.run(debug=True)
