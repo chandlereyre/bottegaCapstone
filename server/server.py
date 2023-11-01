@@ -68,4 +68,9 @@ def createChat():
     # NEEDS userFrom, userTo, message
     return "chat created"
 
-socketio.run(debug=True)
+@socketio.on('message')
+def handle_message(data):
+    print('received message: ' + data)
+
+if __name__ == '__main__':  
+    socketio.run(app)
