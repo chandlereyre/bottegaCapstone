@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       isLoading: true,
       loggedInStatus: null,
+      username: null,
     };
 
     this.handleSuccessfulLogin = this.handleSuccessfulLogin.bind(this);
@@ -50,17 +51,15 @@ class App extends Component {
       method: "get",
       withCredentials: "true",
     }).then((response) => {
-      console.log(response.data);
-      const loggedIn = response.data;
-
       this.setState({
-        loggedInStatus: loggedIn,
+        loggedInStatus: response.data.loggedIn,
         isLoading: false,
+        username: response.data.username,
       });
     });
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.setState({ isloading: true });
     this.checkLoginStatus();
   }
@@ -91,6 +90,7 @@ class App extends Component {
                   <Main
                     handleSuccessfulLogout={this.handleSuccessfulLogout}
                     type={"home"}
+                    username={this.state.username}
                   />
                 ) : (
                   <Navigate to="/login" replace />

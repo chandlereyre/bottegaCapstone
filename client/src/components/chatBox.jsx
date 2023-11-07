@@ -1,5 +1,4 @@
 import { React, useState } from "react";
-import axios from "axios";
 
 export default function chatBox({ sendMessage }) {
   const [message, setMessage] = useState("");
@@ -8,9 +7,16 @@ export default function chatBox({ sendMessage }) {
     setMessage(event.target.value);
   }
 
-  function handleSubmit() {
-    console.log("message sent");
+  function handleMessage(sendMessage) {
+    sendMessage(message);
+    setMessage("");
   }
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleMessage(sendMessage);
+    }
+  };
 
   return (
     <div className="chatBox">
@@ -20,8 +26,12 @@ export default function chatBox({ sendMessage }) {
         placeholder="Send message. . ."
         onChange={handleChange}
         value={message}
+        onKeyDown={(event) => handleKeyPress(event)}
       ></input>
-      <button className="chat-button" onClick={() => sendMessage(message)}>
+      <button
+        className="chat-button"
+        onClick={() => handleMessage(sendMessage)}
+      >
         Send
       </button>
     </div>

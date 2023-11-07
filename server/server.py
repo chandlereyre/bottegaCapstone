@@ -36,10 +36,19 @@ def login():
         else:
             return 'user not found'
     if request.method == 'GET':
+        data = {}
         if 'username' in session:
-            return 'true'
+            data = {
+                "loggedIn": "true",
+                "username": session.get('username', None)
+            }
+            return data
         else:
-            return 'false'
+            data = {
+                "loggedIn": "false",
+                "username": None
+            }
+            return data
     return ''
 
 @app.route("/auth/logout", methods = ['DELETE'])
@@ -54,8 +63,14 @@ def createAccount():
     if db.user.find_one({'username': username}):
         return "user already exists"
     else:
-        db.user.insert_one({'username': username, 'password': password})
+        db.user.insert_one({'username': username, 'password': password, 'chats': []})
         return 'account created'
+    
+@app.route("/findchats", methods = ['POST'])
+def getChats():
+    username = request.json['username']
+    return db.user.find_one({'username': username})["chats"]
+
 
 @app.route("/update-account", methods = ['POST'])
 def updateAccount():
@@ -69,11 +84,14 @@ def createChat():
     return "chat created"
 
 @socketio.on('joinRoom')
+def join_room(data):
+    # TODO join room
+    pass
 
 @socketio.on('chatMessage')
 def handle_message(data):
     print('received message: ' + data)
-    socketio.emit('chatMessage', {'message': 'Data recieved'})
+    socketio.emit('chatMessage', {'message': 'Message received'})
 
 if __name__ == '__main__':  
     socketio.run(app)

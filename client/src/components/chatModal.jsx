@@ -1,7 +1,33 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { React, useState } from "react";
+import axios from "axios";
 
 export default function chatModal({ toggleModal, setModal, modal }) {
+  const [recipient, setRecipient] = useState("");
+
+  function handleChange(event) {
+    setRecipient(event.target.value);
+  }
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      createChat();
+    }
+  };
+
+  function createChat() {
+    axios({
+      method: "post",
+      url: "http://localhost:3000/create-chat",
+      data: {
+        recipient: recipient,
+      },
+      withCredentials: true,
+    }).then((response) => {
+      setRecipient("");
+    });
+  }
+
   return (
     <div>
       <div
@@ -21,8 +47,17 @@ export default function chatModal({ toggleModal, setModal, modal }) {
             />
           </div>
           <div className="modal-input">
-            <input type="text" className="input" placeholder="Recipient. . ." />
-            <button className="login-button">Create Chat</button>
+            <input
+              type="text"
+              className="input"
+              placeholder="Recipient. . ."
+              onKeyDown={(event) => handleKeyPress(event)}
+              onChange={handleChange}
+              value={recipient}
+            />
+            <button className="login-button" onClick={createChat}>
+              Create Chat
+            </button>
           </div>
         </div>
       </div>
