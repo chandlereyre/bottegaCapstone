@@ -8,9 +8,10 @@ from flask_socketio import SocketIO, join_room, leave_room
 # app config
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
+app.config['FLASK_DEBUG'] = True
 app.config['SECRET_KEY'] = open("secret_key.txt", "r").read()
 app.config['SESSION_TYPE'] = 'redis'
-app.config['SESSION_PERMANENT'] = True
+# app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -66,9 +67,9 @@ def createAccount():
         db.user.insert_one({'username': username, 'password': password, 'chats': []})
         return 'account created'
     
-@app.route("/findchats", methods = ['POST'])
+@app.route("/findchats", methods = ['GET'])
 def getChats():
-    username = request.json['username']
+    username = session.get('username', None)
     return db.user.find_one({'username': username})["chats"]
 
 
@@ -79,9 +80,21 @@ def updateAccount():
 
 @app.route("/create-chat", methods = ['POST'])
 def createChat():
-    # TODO create chat
-    # NEEDS userFrom, userTo, message
-    return "chat created"
+    recipient = request.json['recipient']
+    username = session.get('username', None)
+    if db.user.find_one({'username': recipient}):
+        chats = db.user.find_one({'username': username})["chats"]
+        if recipient not in chats:
+            # update chats for current user
+            chats.append(recipient)
+            db.user.update_one({'username': username}, {"$set": {"chats": chats}})
+            # update chats for recipient
+            chats = db.user.find_one({'username': recipient})["chats"]
+            chats.append(username)
+            db.user.update_one({'username': recipient}, {"$set": {"chats": chats}})
+        return "recipient"
+    else:
+        return "user not found"
 
 @socketio.on('joinRoom')
 def join_room(data):

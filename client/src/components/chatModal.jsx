@@ -17,14 +17,15 @@ export default function chatModal({ toggleModal, setModal, modal }) {
 
   function createChat() {
     axios({
+      url: "http://localhost:5000/create-chat",
       method: "post",
-      url: "http://localhost:3000/create-chat",
       data: {
         recipient: recipient,
       },
       withCredentials: true,
-    }).then((response) => {
+    }).then(() => {
       setRecipient("");
+      toggleModal(setModal, modal, true);
     });
   }
 
@@ -32,7 +33,7 @@ export default function chatModal({ toggleModal, setModal, modal }) {
     <div>
       <div
         className="chat-modal-wrapper"
-        onClick={() => toggleModal(setModal, modal)}
+        onClick={() => toggleModal(setModal, modal, false)}
       >
         <div
           className="chat-modal"
@@ -43,7 +44,7 @@ export default function chatModal({ toggleModal, setModal, modal }) {
             <FontAwesomeIcon
               icon="fa-solid fa-x"
               className="icon"
-              onClick={() => toggleModal(setModal, modal)}
+              onClick={() => toggleModal(setModal, modal, false)}
             />
           </div>
           <div className="modal-input">
