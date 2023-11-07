@@ -11,7 +11,7 @@ CORS(app, origins="*", supports_credentials=True)
 app.config['FLASK_DEBUG'] = True
 app.config['SECRET_KEY'] = open("secret_key.txt", "r").read()
 app.config['SESSION_TYPE'] = 'redis'
-# app.config['SESSION_PERMANENT'] = True
+app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -40,13 +40,13 @@ def login():
         data = {}
         if 'username' in session:
             data = {
-                "loggedIn": "true",
+                "loggedIn": True,
                 "username": session.get('username', None)
             }
             return data
         else:
             data = {
-                "loggedIn": "false",
+                "loggedIn": False,
                 "username": None
             }
             return data

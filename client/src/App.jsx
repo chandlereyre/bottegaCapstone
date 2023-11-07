@@ -49,7 +49,7 @@ class App extends Component {
     axios({
       url: "http://localhost:5000/auth/login",
       method: "get",
-      withCredentials: "true",
+      withCredentials: true,
     }).then((response) => {
       this.setState({
         loggedInStatus: response.data.loggedIn,
