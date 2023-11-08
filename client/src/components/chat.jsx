@@ -13,19 +13,23 @@ export default class Chat extends Component {
     this.socket = io("http://localhost:5000");
 
     // join room with other user
-    // this.socket.emit("joinRoom", this.props.otherUser);
+    this.socket.emit("join", { room: "room1" });
 
     this.socket.on("chatMessage", (data) => {
       console.log(data);
     });
+
+    this.socket.on();
   }
 
   componentWillUnmount() {
+    this.socket.emit("leave", { room: "room1" });
+
     this.socket.disconnect();
   }
 
   sendMessage = (message) => {
-    this.socket.emit("chatMessage", message);
+    // this.socket.emit("chatMessage", message);
   };
 
   render() {

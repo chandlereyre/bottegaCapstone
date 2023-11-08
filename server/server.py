@@ -3,7 +3,7 @@ from flask import Flask, request, session
 from flask_cors import CORS
 from flask_session import Session
 from pymongo import MongoClient
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, join_room, leave_room, send
 
 # app config
 app = Flask(__name__)
@@ -96,14 +96,24 @@ def createChat():
     else:
         return "user not found"
 
-@socketio.on('joinRoom')
-def join_room(data):
-    # TODO join room
-    pass
+@socketio.on('join')
+def join_chat(data):
+    username = session.get('username')
+    room = data['room']
+    join_room(room)
+    send(str(username) + ' has entered the room.', to=room)
+
+@socketio.on('leave')
+def leave_chat(data):
+    username = session.get('username')
+    room = data['room']
+    leave_room(room)
+    send(str(username) + ' has left the room.', to=room)
 
 @socketio.on('chatMessage')
 def handle_message(data):
     print('received message: ' + data)
+    # get room
     socketio.emit('chatMessage', {'message': 'Message received'})
 
 if __name__ == '__main__':  
