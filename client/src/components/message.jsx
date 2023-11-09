@@ -8,7 +8,10 @@ export default function Message({
   return (
     <div
       className="message"
-      onClick={() => handleUpdateChat(userName, setChat)}
+      onClick={() => {
+        handleUpdateChat("", setChat);
+        handleUpdateChat(userName, setChat);
+      }}
     >
       <div className="message-profile-pic">
         <img src={profilePic} alt=""></img>

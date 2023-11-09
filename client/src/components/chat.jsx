@@ -6,6 +6,9 @@ import io from "socket.io-client";
 export default class Chat extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      otherUser: this.props.otherUser,
+    };
     this.sendMessage = this.sendMessage.bind(this);
   }
 
@@ -13,7 +16,10 @@ export default class Chat extends Component {
     this.socket = io("http://localhost:5000");
 
     // join room with other user
-    this.socket.emit("join", { room: "room1" });
+    this.socket.emit("join", {
+      user1: this.props.username,
+      user2: this.props.otherUser,
+    });
 
     this.socket.on("chatMessage", (data) => {
       console.log(data);
@@ -23,13 +29,21 @@ export default class Chat extends Component {
   }
 
   componentWillUnmount() {
-    this.socket.emit("leave", { room: "room1" });
+    console.log("UNMOUNTING");
+    this.socket.emit("leave", {
+      user1: this.props.username,
+      user2: this.props.otherUser,
+    });
 
     this.socket.disconnect();
   }
 
   sendMessage = (message) => {
-    // this.socket.emit("chatMessage", message);
+    this.socket.emit("chatMessage", {
+      message: message,
+      to: this.state.otherUser,
+      from: this.props.username,
+    });
   };
 
   render() {

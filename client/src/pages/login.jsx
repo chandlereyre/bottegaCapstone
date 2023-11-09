@@ -43,7 +43,7 @@ class Login extends Component {
       .then((response) => {
         console.log(response.data);
         if (response.data === "session created") {
-          this.props.handleSuccessfulLogin();
+          this.props.handleSuccessfulLogin(this.state.username);
         } else {
           this.props.handleUnsuccessfulLogin();
           this.setState({ message: response.data });

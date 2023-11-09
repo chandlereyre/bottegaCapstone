@@ -8,17 +8,18 @@ function handleUpdateChat(username, setChat) {
   setChat(username);
 }
 
-function Render({ type }) {
+function Render({ type, username }) {
   const [chat, setChat] = useState("");
   if (type == "home") {
     return (
       <div className="home">
         <MessageList handleUpdateChat={handleUpdateChat} setChat={setChat} />
-        {chat != "" ? (
+        {chat !== "" ? (
           <Chat
             otherUser={chat}
             handleUpdateChat={handleUpdateChat}
             setChat={setChat}
+            username={username}
           />
         ) : null}
       </div>
@@ -41,7 +42,7 @@ export default function Main(props) {
           handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
         />
       </div>
-      <Render type={props.type} />;
+      <Render type={props.type} username={props.username} />;
     </div>
   );
 }

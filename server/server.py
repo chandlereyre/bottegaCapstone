@@ -14,13 +14,16 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
-socketio = SocketIO(app, cors_allowed_origins="*")
 
 # mongo init
 db = MongoClient("localhost", 27017).chatApp
 
 # Create Flask-Session
-server_session = Session(app)
+Session(app)
+
+# Create socketIO
+socketio = SocketIO(app, cors_allowed_origins="*", manage_session=False)
+
 
 @app.route("/auth/login", methods = ['GET', 'POST'])
 def login():
@@ -98,23 +101,34 @@ def createChat():
 
 @socketio.on('join')
 def join_chat(data):
-    username = session.get('username')
-    room = data['room']
+    room = computeRoom(data['user1'], data['user2'])
+    username = data['user1']
     join_room(room)
-    send(str(username) + ' has entered the room.', to=room)
+    socketio.emit('chatMessage', {'message': str(username) + ' has entered the room.'}, room=room)
 
 @socketio.on('leave')
 def leave_chat(data):
-    username = session.get('username')
-    room = data['room']
+    room = computeRoom(data['user1'], data['user2'])
+    username = data['user1']
     leave_room(room)
-    send(str(username) + ' has left the room.', to=room)
+    socketio.emit('chatMessage', {'message': str(username) + ' has left the room.'}, room=room)
 
 @socketio.on('chatMessage')
 def handle_message(data):
-    print('received message: ' + data)
+    print('received message: ' + data['message'])
+    message = data['message']
+    room = data['room']
     # get room
-    socketio.emit('chatMessage', {'message': 'Message received'})
+    socketio.emit('chatMessage', {'message': message}, room=room)
+
+def computeRoom(user1, user2):
+    if user1 > user2:
+        temp = user2
+        user2 = user1
+        user1 = temp
+    room = user1 + user2
+    return room
+
 
 if __name__ == '__main__':  
     socketio.run(app)

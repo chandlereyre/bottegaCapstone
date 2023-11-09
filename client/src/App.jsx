@@ -21,9 +21,10 @@ class App extends Component {
     this.handleSuccessfulLogout = this.handleSuccessfulLogout.bind(this);
   }
 
-  handleSuccessfulLogin() {
+  handleSuccessfulLogin(username) {
     this.setState({
       loggedInStatus: true,
+      username: username,
     });
   }
 
@@ -104,6 +105,7 @@ class App extends Component {
                   <Main
                     handleSuccessfulLogout={this.handleSuccessfulLogout}
                     type={"profile"}
+                    username={this.state.username}
                   />
                 ) : (
                   <Navigate to="/login" replace />
