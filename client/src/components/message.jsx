@@ -3,14 +3,12 @@ export default function Message({
   userName,
   previewMessage,
   handleUpdateChat,
-  setChat,
 }) {
   return (
     <div
       className="message"
       onClick={() => {
-        handleUpdateChat("", setChat);
-        handleUpdateChat(userName, setChat);
+        handleUpdateChat(userName);
       }}
     >
       <div className="message-profile-pic">

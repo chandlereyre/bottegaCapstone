@@ -4,21 +4,15 @@ import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 
-function handleUpdateChat(username, setChat) {
-  setChat(username);
-}
-
-function Render({ type, username }) {
-  const [chat, setChat] = useState("");
+function Render({ type, username, chat, setChat, handleUpdateChat }) {
   if (type == "home") {
     return (
       <div className="home">
-        <MessageList handleUpdateChat={handleUpdateChat} setChat={setChat} />
-        {chat !== "" ? (
+        <MessageList handleUpdateChat={handleUpdateChat} />
+        {chat !== null ? (
           <Chat
             otherUser={chat}
             handleUpdateChat={handleUpdateChat}
-            setChat={setChat}
             username={username}
           />
         ) : null}
@@ -35,6 +29,12 @@ function Render({ type, username }) {
 }
 
 export default function Main(props) {
+  const [chat, setChat] = useState(null);
+
+  function handleUpdateChat(username) {
+    setChat(username);
+  }
+
   return (
     <div className="main-wrapper">
       <div>
@@ -42,7 +42,14 @@ export default function Main(props) {
           handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
         />
       </div>
-      <Render type={props.type} username={props.username} />;
+      <Render
+        type={props.type}
+        username={props.username}
+        handleUpdateChat={handleUpdateChat}
+        setChat={setChat}
+        chat={chat}
+      />
+      ;
     </div>
   );
 }

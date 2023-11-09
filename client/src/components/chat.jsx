@@ -53,7 +53,7 @@ export default class Chat extends Component {
           <div className="title">Chat with {this.props.otherUser}</div>
           <div
             className="chat-close"
-            onClick={() => this.props.handleUpdateChat("", this.props.setChat)}
+            onClick={() => this.props.handleUpdateChat(null)}
           >
             <FontAwesomeIcon icon="fa-solid fa-x" />
           </div>
