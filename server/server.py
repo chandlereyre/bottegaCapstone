@@ -117,7 +117,9 @@ def leave_chat(data):
 def handle_message(data):
     print('received message: ' + data['message'])
     message = data['message']
-    room = data['room']
+    recipient = data['user2']
+    sender = data['user1']
+    room = computeRoom(data['user1'], data['user2'])
     # get room
     socketio.emit('chatMessage', {'message': message}, room=room)
 
