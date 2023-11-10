@@ -4,31 +4,40 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 
 export default function Chat({ username, otherUser, handleUpdateChat }) {
-  let socket;
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+
   useEffect(() => {
-    socket = io("http://localhost:5000");
+    const newSocket = io("http://localhost:5000");
 
     // join room with other user
-    socket.emit("join", {
+    newSocket.emit("join", {
       user1: username,
       user2: otherUser,
     });
 
-    socket.on("chatMessage", (data) => {
+    newSocket.on("chatMessage", (data) => {
+      let tempArray = messages;
+      tempArray.push(data);
+      setMessages([...tempArray]);
       console.log(data);
     });
 
-    socket.on();
-    return () => {
-      console.log("UNMOUNTING");
-      socket.emit("leave", {
-        user1: username,
-        user2: otherUser,
-      });
+    setSocket(newSocket);
 
-      socket.disconnect();
+    // TODO get past messages over http
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+      // socket.emit("leave", {
+      //   user1: username,
+      //   user2: otherUser,
+      // });
+
+      // socket.disconnect();
     };
-  });
+  }, []);
 
   function sendMessage(message) {
     socket.emit("chatMessage", {
@@ -38,6 +47,10 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
     });
   }
 
+  const chatMSG = messages.map((message) => {
+    return <div key={message.message}>{message.message}</div>;
+  });
+
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
@@ -46,7 +59,9 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
           <FontAwesomeIcon icon="fa-solid fa-x" />
         </div>
       </div>
-      <div className="chat-messages-wrapper"></div>
+      <div className="chat-messages-wrapper">
+        <div>{chatMSG}</div>
+      </div>
       <div className="chatbox-wrapper">
         <ChatBox sendMessage={sendMessage} />
       </div>
