@@ -27,15 +27,14 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
 
     // TODO get past messages over http
     return () => {
+      newSocket.emit("leave", {
+        user1: username,
+        user2: otherUser,
+      });
+
       if (newSocket) {
         newSocket.disconnect();
       }
-      // socket.emit("leave", {
-      //   user1: username,
-      //   user2: otherUser,
-      // });
-
-      // socket.disconnect();
     };
   }, []);
 
