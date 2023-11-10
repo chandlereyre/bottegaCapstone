@@ -48,7 +48,16 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
   }
 
   const chatMSG = messages.map((message) => {
-    return <div key={shortid.generate()}>{message.message}</div>;
+    const msgClass = message.from == username ? "blue-message" : "grey-message";
+    const flexClass =
+      message.from == username ? "chat-flex-blue" : "chat-flex-grey";
+    return (
+      <div className={flexClass + " chat-flex"}>
+        <div className={msgClass + " chat-message"} key={shortid.generate()}>
+          {message.message}
+        </div>
+      </div>
+    );
   });
 
   return (

@@ -48,6 +48,7 @@ body {
   display: grid;
   height: 100vh;
   grid-template-rows: 4rem 10fr 4rem;
+  max-width: 100%;
 }
 
 .chat-top-bar {
@@ -63,7 +64,7 @@ body {
 }
 
 .chatBox {
-  width: calc(100% - 2rem);
+  // width: calc(100% - 2rem);
   height: 100%;
   display: grid;
   grid-template-columns: 8fr 1fr;
@@ -158,4 +159,42 @@ body {
     height: 100%;
     padding: 5px;
   }
+}
+
+.chat-flex {
+  display: flex;
+  // width: 100%;
+}
+
+.chat-flex-grey {
+  justify-content: left;
+}
+
+.chat-flex-blue {
+  justify-content: right;
+}
+.chat-message {
+  color: white;
+  padding: 0.7em;
+  padding-bottom: 0.7em;
+  text-align: left;
+  border-radius: 1em;
+  margin: 0.5em;
+  font-size: 1.1em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-wrap: wrap;
+  max-width: 60%;
+}
+.blue-message {
+  background-color: blue;
+}
+
+.grey-message {
+  background-color: grey;
+}
+
+.chat-messages-wrapper {
+  max-width: 100%;
+  overflow: hidden;
 }
