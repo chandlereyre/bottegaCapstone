@@ -120,8 +120,7 @@ def handle_message(data):
     recipient = data['user2']
     sender = data['user1']
     room = computeRoom(data['user1'], data['user2'])
-    # get room
-    socketio.emit('chatMessage', {'message': message}, room=room)
+    socketio.emit('chatMessage', {'message': message, 'from': sender, 'to': recipient}, room=room)
 
 def computeRoom(user1, user2):
     if user1 > user2:
