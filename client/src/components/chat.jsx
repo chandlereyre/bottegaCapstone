@@ -2,6 +2,7 @@ import { React, Component, useEffect, useState } from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
+import shortid from "shortid";
 
 export default function Chat({ username, otherUser, handleUpdateChat }) {
   const [socket, setSocket] = useState(null);
@@ -47,7 +48,7 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
   }
 
   const chatMSG = messages.map((message) => {
-    return <div key={message.message}>{message.message}</div>;
+    return <div key={shortid.generate()}>{message.message}</div>;
   });
 
   return (
