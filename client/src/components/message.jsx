@@ -4,11 +4,19 @@ export default function Message({
   previewMessage,
   handleUpdateChat,
 }) {
+  async function firstFunction() {
+    handleUpdateChat(null);
+  }
+
+  async function secondFunction() {
+    await firstFunction();
+    handleUpdateChat(userName);
+  }
   return (
     <div
       className="message"
       onClick={() => {
-        handleUpdateChat(userName);
+        secondFunction();
       }}
     >
       <div className="message-profile-pic">

@@ -56,6 +56,8 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
       if (newSocket) {
         newSocket.disconnect();
       }
+      setMessages([]);
+      console.log("Dismount");
     };
   }, []);
 

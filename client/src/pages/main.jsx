@@ -4,7 +4,7 @@ import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 
-function Render({ type, username, chat, setChat, handleUpdateChat }) {
+function Render({ type, username, chat, handleUpdateChat }) {
   if (type == "home") {
     return (
       <div className="home">
@@ -30,6 +30,7 @@ function Render({ type, username, chat, setChat, handleUpdateChat }) {
 
 export default function Main(props) {
   const [chat, setChat] = useState(null);
+  const [reRender, setReRender] = useState(null);
 
   function handleUpdateChat(username) {
     setChat(username);
@@ -48,6 +49,7 @@ export default function Main(props) {
         handleUpdateChat={handleUpdateChat}
         setChat={setChat}
         chat={chat}
+        setReRender={setReRender}
       />
       ;
     </div>
