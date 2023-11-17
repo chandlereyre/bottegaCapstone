@@ -98,28 +98,45 @@ def createChat():
         return "recipient"
     else:
         return "user not found"
+    
+@app.route("/get-messages", methods = ['POST'])
+def getMessages():
+    room = computeRoom(request.json['user1'], request.json['user2'])
+    if db.chats.find_one({'room': room}):
+        messages = db.chats.find_one({'room': room})['messages']
+        return messages
+    else:
+        return []
+
 
 @socketio.on('join')
 def join_chat(data):
     room = computeRoom(data['user1'], data['user2'])
     username = data['user1']
     join_room(room)
-    socketio.emit('chatMessage', {'message': str(username) + ' has entered the room.'}, room=room)
+    # socketio.emit('chatMessage', {'message': str(username) + ' has entered the room.'}, room=room)
 
 @socketio.on('leave')
 def leave_chat(data):
     room = computeRoom(data['user1'], data['user2'])
     username = data['user1']
     leave_room(room)
-    socketio.emit('chatMessage', {'message': str(username) + ' has left the room.'}, room=room)
+    # socketio.emit('chatMessage', {'message': str(username) + ' has left the room.'}, room=room)
 
 @socketio.on('chatMessage')
 def handle_message(data):
-    print('received message: ' + data['message'])
+    # print('received message: ' + data['message'])
     message = data['message']
     recipient = data['user2']
     sender = data['user1']
     room = computeRoom(data['user1'], data['user2'])
+    # Add thing
+    if not db.chats.find_one({'room': room}):
+        db.chats.insert_one({'room': room, 'messages': [{'message': message, 'to': recipient, 'from': sender}]})
+    else:
+        messages = db.chats.find_one({'room': room})['messages']
+        messages.append({'message': message, 'to': recipient, 'from': sender})
+        db.chats.update_one({'room': room}, {'$set': {'messages': messages}})
     socketio.emit('chatMessage', {'message': message, 'from': sender, 'to': recipient}, room=room)
 
 def computeRoom(user1, user2):

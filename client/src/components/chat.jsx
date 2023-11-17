@@ -1,14 +1,34 @@
-import { React, Component, useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 import shortid from "shortid";
+import axios from "axios";
 
 export default function Chat({ username, otherUser, handleUpdateChat }) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
+    // get chats
+    axios({
+      url: "http://localhost:5000/get-messages",
+      method: "post",
+      data: {
+        user1: username,
+        user2: otherUser,
+      },
+      withCredentials: true,
+    }).then((data) => {
+      let tempArray = messages;
+      data.data.forEach((message) => {
+        tempArray.push(message);
+      });
+      setMessages([...tempArray]);
+      console.log(messages);
+    });
+
+    // socketio
     const newSocket = io("http://localhost:5000");
 
     // join room with other user
