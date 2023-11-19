@@ -22,7 +22,7 @@ function Render({ type, username, chat, handleUpdateChat }) {
   if (type == "profile") {
     return (
       <div>
-        <Profile />
+        <Profile username={username} />
       </div>
     );
   }

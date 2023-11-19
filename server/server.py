@@ -67,7 +67,7 @@ def createAccount():
     if db.user.find_one({'username': username}):
         return "user already exists"
     else:
-        db.user.insert_one({'username': username, 'password': password, 'chats': []})
+        db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': []})
         return 'account created'
     
 @app.route("/findchats", methods = ['GET'])
@@ -116,6 +116,19 @@ def getLastMessage():
         return message['message']
     else:
         return ""
+    
+@app.route("/get-profile-info", methods=['POST'])
+def getProfileInfo():
+    user = request.json['username']
+    if db.user.find_one({'username': user}):
+        userData = db.user.find_one({'username': user})
+        responseData = {
+            "username": userData['username'],
+            "bio": userData['bio'],
+        }
+        return responseData
+    else:
+        return "user not found"
 
 
 @socketio.on('join')
