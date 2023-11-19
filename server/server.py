@@ -107,21 +107,26 @@ def getMessages():
         return messages
     else:
         return []
+    
+@app.route("/get-last-message", methods=['POST'])
+def getLastMessage():
+    room = computeRoom(request.json['user1'], request.json['user2'])
+    if db.chats.find_one({'room': room}):
+        message = db.chats.find_one({'room': room})['messages'][-1]
+        return message['message']
+    else:
+        return ""
 
 
 @socketio.on('join')
 def join_chat(data):
     room = computeRoom(data['user1'], data['user2'])
-    username = data['user1']
     join_room(room)
-    # socketio.emit('chatMessage', {'message': str(username) + ' has entered the room.'}, room=room)
 
 @socketio.on('leave')
 def leave_chat(data):
     room = computeRoom(data['user1'], data['user2'])
-    username = data['user1']
     leave_room(room)
-    # socketio.emit('chatMessage', {'message': str(username) + ' has left the room.'}, room=room)
 
 @socketio.on('chatMessage')
 def handle_message(data):

@@ -18,7 +18,7 @@ function getMessages(setChats) {
     });
 }
 
-export default function MessageList({ handleUpdateChat }) {
+export default function MessageList({ handleUpdateChat, thisUser }) {
   const [modal, setModal] = useState(false);
   const [chats, setChats] = useState([]);
 
@@ -38,6 +38,7 @@ export default function MessageList({ handleUpdateChat }) {
       previewMessage="lorem"
       userName={user}
       handleUpdateChat={handleUpdateChat}
+      thisUser={thisUser}
     />
   ));
 

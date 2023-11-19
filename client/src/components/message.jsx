@@ -1,9 +1,24 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 export default function Message({
   profilePic,
   userName,
-  previewMessage,
   handleUpdateChat,
+  thisUser,
 }) {
+  const [lastMessage, setLastMessage] = useState("");
+
+  useEffect(() => {
+    axios({
+      url: "http://localhost:5000/get-last-message",
+      method: "post",
+      data: { user1: thisUser, user2: userName },
+      withCredentials: true,
+    }).then((response) => {
+      setLastMessage(response.data);
+    });
+  }, []);
   async function firstFunction() {
     handleUpdateChat(null);
   }
@@ -24,7 +39,7 @@ export default function Message({
       </div>
       <div className="message-content">
         <div className="person-name">{userName}</div>
-        <div className="text">{previewMessage}</div>
+        <div className="text">{lastMessage}</div>
       </div>
     </div>
   );
