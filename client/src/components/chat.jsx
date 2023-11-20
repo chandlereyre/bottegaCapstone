@@ -46,7 +46,6 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
 
     setSocket(newSocket);
 
-    // TODO get past messages over http
     return () => {
       newSocket.emit("leave", {
         user1: username,

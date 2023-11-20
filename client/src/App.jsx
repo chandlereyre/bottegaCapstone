@@ -1,4 +1,5 @@
 import "./styles/main.scss";
+import "react-tooltip/dist/react-tooltip.css";
 import { React, Component } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";

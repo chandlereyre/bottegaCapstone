@@ -2,7 +2,7 @@ import { React, Component } from "react";
 import { NavLink, Navigate } from "react-router-dom";
 import axios from "axios";
 
-class Signup extends Component {
+export default class Signup extends Component {
   constructor() {
     super();
 
@@ -75,6 +75,8 @@ class Signup extends Component {
             name="username"
             onChange={this.handleChange}
             value={this.state.username}
+            data-tooltip-id="username-signup-tooltip"
+            data-tooltip-content="At least 6 characters"
           ></input>
           <input
             type="password"
@@ -120,5 +122,3 @@ class Signup extends Component {
     );
   }
 }
-
-export default Signup;
