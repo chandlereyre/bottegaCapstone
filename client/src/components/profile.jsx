@@ -1,4 +1,5 @@
 import { React, useEffect, useState } from "react";
+import Dropzone from "react-dropzone";
 import axios from "axios";
 
 export default function Profile({ username }) {
@@ -22,6 +23,7 @@ export default function Profile({ username }) {
     }).then((response) => {
       setBio(response.data.bio);
       setFormUsername(response.data.username);
+      setProfilePic(response.data.profilePic);
     });
   }
 
@@ -49,6 +51,16 @@ export default function Profile({ username }) {
     <div className="profile-wrapper">
       <div className="inner-profile-wrapper">
         <div className="profile-picture">
+          {/* <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+            {({ getRootProps, getInputProps }) => (
+              <section>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p>Drag 'n' drop some files here, or click to select files</p>
+                </div>
+              </section>
+            )}
+          </Dropzone> */}
           <img src={profilePic}></img>
         </div>
         <div className="profile-item">

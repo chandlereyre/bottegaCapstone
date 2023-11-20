@@ -1,5 +1,5 @@
 import redis
-from flask import Flask, request, session
+from flask import Flask, request, session, send_file
 from flask_cors import CORS
 from flask_session import Session
 from pymongo import MongoClient
@@ -67,7 +67,7 @@ def createAccount():
     if db.user.find_one({'username': username}):
         return "user already exists"
     else:
-        db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': []})
+        db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': ""})
         return 'account created'
     
 @app.route("/findchats", methods = ['GET'])
@@ -125,6 +125,7 @@ def getProfileInfo():
         responseData = {
             "username": userData['username'],
             "bio": userData['bio'],
+            "profilePic": userData['profilePic']
         }
         return responseData
     else:
@@ -139,6 +140,14 @@ def updateProfile():
         return "user updated"
     else:
         return "user not found"
+    
+@app.route('/img/<imagename>', methods=["GET"])
+def getImage(imagename):
+
+    # f = open(f'./img/{imagename}', "r")
+    # img = f.read()
+
+    return send_file(f"./img/{imagename}", mimetype="image/jpeg")
 
 @socketio.on('join')
 def join_chat(data):
