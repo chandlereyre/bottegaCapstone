@@ -1,6 +1,7 @@
 import { React, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import axios from "axios";
+import defaultProfilePic from "../assets/profilePic.png";
 
 export default function Profile({ username }) {
   const [profilePic, setProfilePic] = useState("");
@@ -61,7 +62,11 @@ export default function Profile({ username }) {
               </section>
             )}
           </Dropzone> */}
-          <img src={profilePic}></img>
+          {profilePic != "" ? (
+            <img src={profilePic}></img>
+          ) : (
+            <img src={defaultProfilePic}></img>
+          )}
         </div>
         <div className="profile-item">
           <p className="title">Username</p>

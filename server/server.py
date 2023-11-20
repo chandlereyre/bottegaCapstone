@@ -1,5 +1,8 @@
 import redis
 from flask import Flask, request, session, send_file
+import PIL.Image as Image
+import base64
+import io
 from flask_cors import CORS
 from flask_session import Session
 from pymongo import MongoClient
@@ -8,7 +11,7 @@ from flask_socketio import SocketIO, join_room, leave_room, send
 # app config
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
-app.config['FLASK_DEBUG'] = True
+app.config['IMG_FOLDER'] = 'img'
 app.config['SECRET_KEY'] = open("secret_key.txt", "r").read()
 app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = True
@@ -135,18 +138,29 @@ def getProfileInfo():
 def updateProfile():
     user = session.get('username', None)
     bio = request.json['bio']
+    # convert dataURL to image
+    head, image = request.json['image']['dataURL'].split(',', 1)
+
+    bits = head.split(';')
+    mime_type = bits[0] if bits[0] else 'text/plain'    
+    _, file_type = mime_type.split('/')
+    
+    b = base64.b64decode(image)
+
+    img = Image.open(io.BytesIO(b))
+
+    # save image locally in 'img' folder
+    img.save(f'./img/{user}.{file_type}')
+    
     if db.user.find_one({'username': user}):
         db.user.update_one({'username': user}, {'$set': {'bio': bio}})
         return "user updated"
     else:
         return "user not found"
     
+    
 @app.route('/img/<imagename>', methods=["GET"])
 def getImage(imagename):
-
-    # f = open(f'./img/{imagename}', "r")
-    # img = f.read()
-
     return send_file(f"./img/{imagename}", mimetype="image/jpeg")
 
 @socketio.on('join')
