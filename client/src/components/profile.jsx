@@ -5,8 +5,13 @@ export default function Profile({ username }) {
   const [profilePic, setProfilePic] = useState("");
   const [bio, setBio] = useState("");
   const [formUsername, setFormUsername] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
+    getProfileInfo();
+  }, []);
+
+  function getProfileInfo() {
     axios({
       url: "http://localhost:5000/get-profile-info",
       method: "post",
@@ -18,7 +23,7 @@ export default function Profile({ username }) {
       setBio(response.data.bio);
       setFormUsername(response.data.username);
     });
-  }, []);
+  }
 
   function handleBioChange(event) {
     setBio(event.target.value);
@@ -29,14 +34,21 @@ export default function Profile({ username }) {
   }
 
   function handleSubmit() {
-    return;
+    axios({
+      url: "http://localhost:5000/update-profile",
+      method: "post",
+      data: { bio: bio },
+      withCredentials: true,
+    }).then((response) => {
+      getProfileInfo();
+      setMessage("Profile Updated!");
+    });
   }
 
   return (
     <div className="profile-wrapper">
       <div className="inner-profile-wrapper">
         <div className="profile-picture">
-          {/* Pass this as a prop later */}
           <img src={profilePic}></img>
         </div>
         <div className="profile-item">
@@ -45,9 +57,11 @@ export default function Profile({ username }) {
             type="text"
             placeholder="username"
             className="input"
+            id="profileUsername"
             name="username"
             onChange={handleUsernameChange}
             value={formUsername}
+            readOnly
           ></input>
         </div>
         <div className="profile-item" id="profile-bio">
@@ -67,6 +81,11 @@ export default function Profile({ username }) {
           </button>
         </div>
       </div>
+      {message != "" ? (
+        <div className="success-message">
+          <p>{message}</p>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -27,7 +27,7 @@ class Signup extends Component {
 
   handleChange(event) {
     this.setState({
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value.replace(/\s/g, ""),
       errorText: "",
     });
   }
@@ -35,6 +35,10 @@ class Signup extends Component {
   handleSubmit() {
     if (this.state.password != this.state.confirmPassword) {
       this.setState({ errorMessage: "Passwords must match" });
+    } else if (this.state.password.length < 8) {
+      this.setState({ errorMessage: "Password must be at least 8 characters" });
+    } else if (this.state.username.length < 6) {
+      this.setState({ errorMessage: "Username must be at least 6 characters" });
     } else {
       axios({
         method: "post",

@@ -130,6 +130,15 @@ def getProfileInfo():
     else:
         return "user not found"
 
+@app.route("/update-profile", methods=['POST'])
+def updateProfile():
+    user = session.get('username', None)
+    bio = request.json['bio']
+    if db.user.find_one({'username': user}):
+        db.user.update_one({'username': user}, {'$set': {'bio': bio}})
+        return "user updated"
+    else:
+        return "user not found"
 
 @socketio.on('join')
 def join_chat(data):
