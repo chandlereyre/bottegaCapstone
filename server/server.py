@@ -111,14 +111,16 @@ def getMessages():
     else:
         return []
     
-@app.route("/get-last-message", methods=['POST'])
+@app.route("/get-message-info", methods=['POST'])
 def getLastMessage():
     room = computeRoom(request.json['user1'], request.json['user2'])
+    profilePic = db.user.find_one({'username': request.json['user2']})['profilePic']
     if db.chats.find_one({'room': room}):
         message = db.chats.find_one({'room': room})['messages'][-1]
-        return message['message']
+        print(profilePic)
+        return {'message': message['message'], 'profilePic': profilePic }
     else:
-        return ""
+        return {'message': "", 'profilePic': profilePic}
     
 @app.route("/get-profile-info", methods=['POST'])
 def getProfileInfo():
@@ -138,6 +140,7 @@ def getProfileInfo():
 def updateProfile():
     user = session.get('username', None)
     bio = request.json['bio']
+
     # convert dataURL to image
     head, image = request.json['profilePic'].split(',', 1)
 
