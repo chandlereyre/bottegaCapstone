@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
@@ -8,6 +8,7 @@ import axios from "axios";
 export default function Chat({ username, otherUser, handleUpdateChat }) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     // get chats
@@ -41,10 +42,12 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
       let tempArray = messages;
       tempArray.push(data);
       setMessages([...tempArray]);
-      console.log(data);
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
     });
 
     setSocket(newSocket);
+
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
 
     return () => {
       newSocket.emit("leave", {
@@ -72,6 +75,7 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
     const msgClass = message.from == username ? "blue-message" : "grey-message";
     const flexClass =
       message.from == username ? "chat-flex-blue" : "chat-flex-grey";
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
     return (
       <div className={flexClass + " chat-flex"}>
         <div className={msgClass + " chat-message"} key={shortid.generate()}>
@@ -91,6 +95,7 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
       </div>
       <div className="chat-messages-wrapper">
         <div>{chatMSG}</div>
+        <div ref={scrollRef} id="scroll-div" />
       </div>
       <div className="chatbox-wrapper">
         <ChatBox sendMessage={sendMessage} />

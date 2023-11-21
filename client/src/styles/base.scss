@@ -196,9 +196,14 @@ body {
 
 .chat-messages-wrapper {
   max-width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #profileUsername {
   color: grey;
+}
+
+#scroll-div {
+  height: 4em;
 }
