@@ -8,6 +8,7 @@ import {
   faPaperPlane,
   faPenToSquare,
   faX,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import App from "./App.jsx";
 
@@ -17,7 +18,8 @@ library.add(
   faRightFromBracket,
   faPaperPlane,
   faPenToSquare,
-  faX
+  faX,
+  faCamera
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);

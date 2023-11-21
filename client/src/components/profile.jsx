@@ -2,6 +2,7 @@ import { React, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import defaultProfilePic from "../assets/profilePic.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Profile({ username }) {
   const [profilePic, setProfilePic] = useState("");
@@ -67,6 +68,9 @@ export default function Profile({ username }) {
           ) : (
             <img src={defaultProfilePic}></img>
           )}
+          <button id="profile-edit-icon">
+            <FontAwesomeIcon icon="fa-solid fa-camera" />
+          </button>
         </div>
         <div className="profile-item">
           <p className="title">Username</p>
