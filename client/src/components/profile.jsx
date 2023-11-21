@@ -25,7 +25,9 @@ export default function Profile({ username }) {
     }).then((response) => {
       setBio(response.data.bio);
       setFormUsername(response.data.username);
-      setProfilePic("http://localhost:5000/" + response.data.profilePic);
+      response.data.profilePic != ""
+        ? setProfilePic("http://localhost:5000/" + response.data.profilePic)
+        : null;
     });
   }
 
