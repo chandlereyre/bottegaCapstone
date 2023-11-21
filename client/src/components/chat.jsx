@@ -8,6 +8,7 @@ import axios from "axios";
 export default function Chat({ username, otherUser, handleUpdateChat }) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
+  let [chatMessages, setChatMessages] = useState([]);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -26,7 +27,26 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
         tempArray.push(message);
       });
       setMessages([...tempArray]);
-      console.log(messages);
+
+      // set messages
+      let chatMSG = messages.map((message) => {
+        const msgClass =
+          message.from == username ? "blue-message" : "grey-message";
+        const flexClass =
+          message.from == username ? "chat-flex-blue" : "chat-flex-grey";
+        return (
+          <div className={flexClass + " chat-flex"}>
+            <div
+              className={msgClass + " chat-message"}
+              key={shortid.generate()}
+            >
+              {message.message}
+            </div>
+          </div>
+        );
+      });
+
+      setChatMessages(chatMSG);
     });
 
     // socketio
@@ -46,8 +66,6 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
     });
 
     setSocket(newSocket);
-
-    scrollRef.current.scrollIntoView({ behavior: "smooth" });
 
     return () => {
       newSocket.emit("leave", {
@@ -71,20 +89,6 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
     });
   }
 
-  const chatMSG = messages.map((message) => {
-    const msgClass = message.from == username ? "blue-message" : "grey-message";
-    const flexClass =
-      message.from == username ? "chat-flex-blue" : "chat-flex-grey";
-    scrollRef.current.scrollIntoView({ behavior: "smooth" });
-    return (
-      <div className={flexClass + " chat-flex"}>
-        <div className={msgClass + " chat-message"} key={shortid.generate()}>
-          {message.message}
-        </div>
-      </div>
-    );
-  });
-
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
@@ -94,7 +98,7 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
         </div>
       </div>
       <div className="chat-messages-wrapper">
-        <div>{chatMSG}</div>
+        <div>{chatMessages}</div>
         <div ref={scrollRef} id="scroll-div" />
       </div>
       <div className="chatbox-wrapper">
