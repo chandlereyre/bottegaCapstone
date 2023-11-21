@@ -139,7 +139,7 @@ def updateProfile():
     user = session.get('username', None)
     bio = request.json['bio']
     # convert dataURL to image
-    head, image = request.json['image']['dataURL'].split(',', 1)
+    head, image = request.json['profilePic'].split(',', 1)
 
     bits = head.split(';')
     mime_type = bits[0] if bits[0] else 'text/plain'    
@@ -153,7 +153,7 @@ def updateProfile():
     img.save(f'./img/{user}.{file_type}')
     
     if db.user.find_one({'username': user}):
-        db.user.update_one({'username': user}, {'$set': {'bio': bio}})
+        db.user.update_one({'username': user}, {'$set': {'bio': bio, 'profilePic': f'/img/{user}.{file_type}'}})
         return "user updated"
     else:
         return "user not found"

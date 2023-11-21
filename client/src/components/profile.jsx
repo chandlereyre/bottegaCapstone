@@ -25,7 +25,7 @@ export default function Profile({ username }) {
     }).then((response) => {
       setBio(response.data.bio);
       setFormUsername(response.data.username);
-      setProfilePic(response.data.profilePic);
+      setProfilePic("http://localhost:5000/" + response.data.profilePic);
     });
   }
 
@@ -41,7 +41,7 @@ export default function Profile({ username }) {
     axios({
       url: "http://localhost:5000/update-profile",
       method: "post",
-      data: { bio: bio },
+      data: { bio: bio, profilePic: profilePic },
       withCredentials: true,
     }).then((response) => {
       getProfileInfo();
@@ -53,24 +53,33 @@ export default function Profile({ username }) {
     <div className="profile-wrapper">
       <div className="inner-profile-wrapper">
         <div className="profile-picture">
-          {/* <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+          <Dropzone
+            onDrop={(acceptedFiles) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                const dataURL = reader.result;
+                setProfilePic(dataURL);
+              };
+              reader.readAsDataURL(acceptedFiles[0]);
+              console.log(acceptedFiles[0]);
+            }}
+          >
             {({ getRootProps, getInputProps }) => (
               <section>
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <p>Drag 'n' drop some files here, or click to select files</p>
+                  <button id="profile-edit-icon">
+                    <FontAwesomeIcon icon="fa-solid fa-camera" />
+                  </button>
                 </div>
               </section>
             )}
-          </Dropzone> */}
+          </Dropzone>
           {profilePic != "" ? (
             <img src={profilePic}></img>
           ) : (
             <img src={defaultProfilePic}></img>
           )}
-          <button id="profile-edit-icon">
-            <FontAwesomeIcon icon="fa-solid fa-camera" />
-          </button>
         </div>
         <div className="profile-item">
           <p className="title">Username</p>
