@@ -141,22 +141,28 @@ def updateProfile():
     user = session.get('username', None)
     bio = request.json['bio']
 
-    # convert dataURL to image
-    head, image = request.json['profilePic'].split(',', 1)
-
-    bits = head.split(';')
-    mime_type = bits[0] if bits[0] else 'text/plain'    
-    _, file_type = mime_type.split('/')
+    print(request.json['profilePic'][0:5])
     
-    b = base64.b64decode(image)
+    if (request.json['profilePic'][0:5] == 'data:'):
+        # convert dataURL to image
+        head, image = request.json['profilePic'].split(',', 1)
 
-    img = Image.open(io.BytesIO(b))
+        bits = head.split(';')
+        mime_type = bits[0] if bits[0] else 'text/plain'    
+        _, file_type = mime_type.split('/')
+        
+        b = base64.b64decode(image)
 
-    # save image locally in 'img' folder
-    img.save(f'./img/{user}.{file_type}')
+        img = Image.open(io.BytesIO(b))
+
+        # save image locally in 'img' folder
+        img.save(f'./img/{user}.{file_type}', quality=50)
     
+        if db.user.find_one({'username': user}):
+            db.user.update_one({'username': user}, {'$set': {'bio': bio, 'profilePic': f'/img/{user}.{file_type}'}})
+            return "user updated"
     if db.user.find_one({'username': user}):
-        db.user.update_one({'username': user}, {'$set': {'bio': bio, 'profilePic': f'/img/{user}.{file_type}'}})
+        db.user.update_one({'username': user}, {'$set': {'bio': bio}})
         return "user updated"
     else:
         return "user not found"

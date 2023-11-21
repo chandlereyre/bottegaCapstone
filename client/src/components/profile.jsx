@@ -40,6 +40,7 @@ export default function Profile({ username }) {
   }
 
   function handleSubmit() {
+    console.log(profilePic);
     axios({
       url: "http://localhost:5000/update-profile",
       method: "post",
