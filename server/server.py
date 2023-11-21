@@ -1,6 +1,6 @@
 import redis
 from flask import Flask, request, session, send_file
-import PIL.Image as Image
+from PIL import Image, ImageOps
 import base64
 import io
 from flask_cors import CORS
