@@ -17,10 +17,10 @@ export default function MessageList({
     newMessage ? getMessages(setChats) : null;
   }
 
-  const messages = messageList.map((user) => (
+  const messages = Object.keys(messageList).map((user) => (
     <Message
       key={user}
-      previewMessage="lorem"
+      previewMessage={messageList[user]}
       userName={user}
       handleUpdateChat={handleUpdateChat}
       thisUser={thisUser}

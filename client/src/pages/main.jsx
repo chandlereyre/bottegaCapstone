@@ -5,7 +5,14 @@ import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 
-function Render({ type, username, chat, handleUpdateChat, messageList }) {
+function Render({
+  type,
+  username,
+  chat,
+  handleUpdateChat,
+  messageList,
+  updateMessages,
+}) {
   if (type == "home") {
     return (
       <div className="home">
@@ -35,8 +42,6 @@ function Render({ type, username, chat, handleUpdateChat, messageList }) {
   }
 }
 
-function updateMessages(username, message) {}
-
 export default function Main(props) {
   const [activeChat, setActiveChat] = useState(null);
   const [msgListChats, setMsgListChats] = useState([]);
@@ -56,11 +61,16 @@ export default function Main(props) {
       withCredentials: true,
     })
       .then((response) => {
+        console.log(response.data);
         setMsgListChats(response.data);
       })
       .catch((error) => {
         console.log("Error getting user messages: ", error);
       });
+  }
+
+  function updateMessages(username, message) {
+    msgListChats.forEach((message) => {});
   }
 
   return (
@@ -77,6 +87,7 @@ export default function Main(props) {
         setChat={setActiveChat}
         chat={activeChat}
         messageList={msgListChats}
+        updateMessages={updateMessages}
       />
       ;
     </div>

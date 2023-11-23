@@ -81,7 +81,15 @@ def updateAccount():
 @app.route("/get-chats", methods = ['GET'])
 def getChats():
     username = session.get('username', None)
-    return db.user.find_one({'username': username})["chats"]
+    data = {}
+    chats = db.user.find_one({'username': username})["chats"]
+    for user in chats:
+        room = computeRoom(username, user)
+        lastMessage = ""
+        if db.chats.find_one({'room': room}):
+            lastMessage = db.chats.find_one({'room': room})['messages'][-1]['message']
+        data[user] = lastMessage
+    return data
 
 @app.route("/create-chat", methods = ['POST'])
 def createChat():
@@ -109,17 +117,14 @@ def getMessages():
         return messages
     else:
         return []
-    
-@app.route("/get-message-info", methods=['POST'])
-def getLastMessage():
-    room = computeRoom(request.json['user1'], request.json['user2'])
-    profilePic = db.user.find_one({'username': request.json['user2']})['profilePic']
-    if db.chats.find_one({'room': room}):
-        message = db.chats.find_one({'room': room})['messages'][-1]
-        print(profilePic)
-        return {'message': message['message'], 'profilePic': profilePic }
+
+@app.route("/get-profile-pic", methods=['POST'])
+def getProfilePic():
+    if db.user.find_one({'username': request.json['username']}):
+        return db.user.find_one({'username': request.json['username']})['profilePic']
     else:
-        return {'message': "", 'profilePic': profilePic}
+        return "user not found"
+
     
 @app.route("/get-profile-info", methods=['POST'])
 def getProfileInfo():

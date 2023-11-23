@@ -2,21 +2,24 @@ import { useEffect, useState } from "react";
 import defaultProfilePic from "../assets/profilePic.png";
 import axios from "axios";
 
-export default function Message({ userName, handleUpdateChat, thisUser }) {
-  const [lastMessage, setLastMessage] = useState("");
+export default function Message({
+  userName,
+  handleUpdateChat,
+  thisUser,
+  previewMessage,
+}) {
   const [profilePic, setProfilePic] = useState("");
 
   useEffect(() => {
     axios({
-      url: "http://localhost:5000/get-message-info",
+      url: "http://localhost:5000/get-profile-pic",
       method: "post",
-      data: { user1: thisUser, user2: userName },
+      data: { username: userName },
       withCredentials: true,
     }).then((response) => {
-      console.log(userName, response.data.profilePic);
-      setLastMessage(response.data.message);
-      response.data.profilePic != ""
-        ? setProfilePic("http://localhost:5000" + response.data.profilePic)
+      console.log(userName, response.data);
+      response.data != ""
+        ? setProfilePic("http://localhost:5000" + response.data)
         : setProfilePic("");
     });
   }, []);
@@ -45,7 +48,7 @@ export default function Message({ userName, handleUpdateChat, thisUser }) {
       </div>
       <div className="message-content">
         <div className="person-name">{userName}</div>
-        <div className="text">{lastMessage}</div>
+        <div className="text">{previewMessage}</div>
       </div>
     </div>
   );
