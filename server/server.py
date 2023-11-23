@@ -73,16 +73,15 @@ def createAccount():
         db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': ""})
         return 'account created'
     
-@app.route("/get-chats", methods = ['GET'])
-def getChats():
-    username = session.get('username', None)
-    return db.user.find_one({'username': username})["chats"]
-
-
 @app.route("/update-account", methods = ['POST'])
 def updateAccount():
     # TODO update account
     return "account updated"
+    
+@app.route("/get-chats", methods = ['GET'])
+def getChats():
+    username = session.get('username', None)
+    return db.user.find_one({'username': username})["chats"]
 
 @app.route("/create-chat", methods = ['POST'])
 def createChat():
@@ -167,7 +166,7 @@ def updateProfile():
     else:
         return "user not found"
     
-    
+# IMAGE HOSTING
 @app.route('/img/<imagename>', methods=["GET"])
 def getImage(imagename):
     return send_file(f"./img/{imagename}", mimetype="image/jpeg")
