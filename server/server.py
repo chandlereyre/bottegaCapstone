@@ -84,7 +84,7 @@ def getChats():
     data = {}
     chats = db.user.find_one({'username': username})["chats"]
     for user in chats:
-        room = computeRoom(username, user)
+        room = computeRoom([username, user])
         lastMessage = ""
         profilePic = ""
         if db.chats.find_one({'room': room}):
@@ -113,7 +113,7 @@ def createChat():
     
 @app.route("/get-messages", methods = ['POST'])
 def getMessages():
-    room = computeRoom(request.json['user1'], request.json['user2'])
+    room = computeRoom([request.json['user1'], request.json['user2']])
     if db.chats.find_one({'room': room}):
         messages = db.chats.find_one({'room': room})['messages']
         return messages
@@ -181,12 +181,12 @@ def getImage(imagename):
 # SOCKET IO / WEBSOCKET
 @socketio.on('join')
 def join_chat(data):
-    room = computeRoom(data['user1'], data['user2'])
+    room = computeRoom([data['user1'], data['user2']])
     join_room(room)
 
 @socketio.on('leave')
 def leave_chat(data):
-    room = computeRoom(data['user1'], data['user2'])
+    room = computeRoom([data['user1'], data['user2']])
     leave_room(room)
 
 @socketio.on('chatMessage')
@@ -195,7 +195,7 @@ def handle_message(data):
     message = data['message']
     recipient = data['user2']
     sender = data['user1']
-    room = computeRoom(data['user1'], data['user2'])
+    room = computeRoom([data['user1'], data['user2']])
     # Add thing
     if not db.chats.find_one({'room': room}):
         db.chats.insert_one({'room': room, 'messages': [{'message': message, 'to': recipient, 'from': sender}]})
@@ -205,15 +205,12 @@ def handle_message(data):
         db.chats.update_one({'room': room}, {'$set': {'messages': messages}})
     socketio.emit('chatMessage', {'message': message, 'from': sender, 'to': recipient}, room=room)
 
-# update for arbitrary amount of users
-def computeRoom(user1, user2):
-    if user1 > user2:
-        temp = user2
-        user2 = user1
-        user1 = temp
-    room = user1 + user2
+def computeRoom(users):
+    users.sort()
+    room = ""
+    for user in users:
+        room += user
     return room
-
 
 if __name__ == '__main__':  
     socketio.run(app)
