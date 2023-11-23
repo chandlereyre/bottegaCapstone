@@ -17,13 +17,14 @@ export default function MessageList({
     newMessage ? getMessages(setChats) : null;
   }
 
-  const messages = Object.keys(messageList).map((user) => (
+  const tempMessages = Object.keys(messageList).map((user) => (
     <Message
       key={user}
-      previewMessage={messageList[user]}
+      previewMessage={messageList[user][0]}
       userName={user}
       handleUpdateChat={handleUpdateChat}
       thisUser={thisUser}
+      profilePic={messageList[user][1]}
     />
   ));
 
@@ -39,7 +40,7 @@ export default function MessageList({
         </a>
       </div>
       <div className="message-divider"></div>
-      <div className="messagelist-content-wrapper">{messages}</div>
+      <div className="messagelist-content-wrapper">{tempMessages}</div>
 
       {modal ? (
         <ChatModal

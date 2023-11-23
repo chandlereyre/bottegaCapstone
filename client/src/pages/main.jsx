@@ -5,43 +5,6 @@ import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 
-function Render({
-  type,
-  username,
-  chat,
-  handleUpdateChat,
-  messageList,
-  updateMessages,
-}) {
-  if (type == "home") {
-    return (
-      <div className="home">
-        {/* Last messages array: [{username: username, lastMessage: lastmessage}] */}
-        <MessageList
-          handleUpdateChat={handleUpdateChat}
-          thisUser={username}
-          messageList={messageList}
-        />
-        {chat !== null ? (
-          <Chat
-            otherUser={chat}
-            handleUpdateChat={handleUpdateChat}
-            username={username}
-            updateMessages={updateMessages}
-          />
-        ) : null}
-      </div>
-    );
-  }
-  if (type == "profile") {
-    return (
-      <div>
-        <Profile username={username} />
-      </div>
-    );
-  }
-}
-
 export default function Main(props) {
   const [activeChat, setActiveChat] = useState(null);
   const [msgListChats, setMsgListChats] = useState([]);
@@ -54,7 +17,37 @@ export default function Main(props) {
     setActiveChat(username);
   }
 
+  function Render() {
+    if (props.type == "home") {
+      return (
+        <div className="home">
+          <MessageList
+            handleUpdateChat={handleUpdateChat}
+            thisUser={props.username}
+            messageList={msgListChats}
+          />
+          {activeChat !== null ? (
+            <Chat
+              otherUser={activeChat}
+              handleUpdateChat={handleUpdateChat}
+              username={props.username}
+              updateMessages={updateMessages}
+            />
+          ) : null}
+        </div>
+      );
+    }
+    if (props.type == "profile") {
+      return (
+        <div>
+          <Profile username={props.username} />
+        </div>
+      );
+    }
+  }
+
   function getMessages() {
+    console.log("getting messages");
     axios({
       url: "http://localhost:5000/get-chats",
       method: "get",
@@ -70,7 +63,13 @@ export default function Main(props) {
   }
 
   function updateMessages(username, message) {
-    msgListChats.forEach((message) => {});
+    let tempArray = msgListChats;
+    Object.keys(tempArray).forEach((key) => {
+      if (key == username) {
+        tempArray[key][0] = message.message;
+      }
+    });
+    setMsgListChats({ ...tempArray });
   }
 
   return (
@@ -80,16 +79,7 @@ export default function Main(props) {
           handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
         />
       </div>
-      <Render
-        type={props.type}
-        username={props.username}
-        handleUpdateChat={handleUpdateChat}
-        setChat={setActiveChat}
-        chat={activeChat}
-        messageList={msgListChats}
-        updateMessages={updateMessages}
-      />
-      ;
+      <Render />;
     </div>
   );
 }

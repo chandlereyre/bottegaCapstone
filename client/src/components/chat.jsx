@@ -5,14 +5,24 @@ import io from "socket.io-client";
 import shortid from "shortid";
 import axios from "axios";
 
-export default function Chat({ username, otherUser, handleUpdateChat }) {
+export default function Chat({
+  username,
+  otherUser,
+  handleUpdateChat,
+  updateMessages,
+}) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
-  let [chatMessages, setChatMessages] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
   const scrollRef = useRef(null);
 
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   useEffect(() => {
-    // get chats
+    console.log("Chat Effect");
+    // get messages
     axios({
       url: "http://localhost:5000/get-messages",
       method: "post",
@@ -26,7 +36,7 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
       data.data.forEach((message) => {
         tempArray.push(message);
       });
-      setMessages([...tempArray]);
+      setMessages(tempArray);
 
       // set messages
       let chatMSG = messages.map((message) => {
@@ -45,8 +55,11 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
           </div>
         );
       });
-
       setChatMessages(chatMSG);
+
+      sleep(50).then(() =>
+        scrollRef.current.scrollIntoView({ behavior: "smooth" })
+      );
     });
 
     // socketio
@@ -61,7 +74,28 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
     newSocket.on("chatMessage", (data) => {
       let tempArray = messages;
       tempArray.push(data);
-      setMessages([...tempArray]);
+      setMessages(tempArray);
+
+      let chatMSG = messages.map((message) => {
+        const msgClass =
+          message.from == username ? "blue-message" : "grey-message";
+        const flexClass =
+          message.from == username ? "chat-flex-blue" : "chat-flex-grey";
+        return (
+          <div className={flexClass + " chat-flex"}>
+            <div
+              className={msgClass + " chat-message"}
+              key={shortid.generate()}
+            >
+              {message.message}
+            </div>
+          </div>
+        );
+      });
+
+      // update messages
+      setChatMessages(chatMSG);
+      updateMessages(otherUser, data);
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     });
 
@@ -76,8 +110,8 @@ export default function Chat({ username, otherUser, handleUpdateChat }) {
       if (newSocket) {
         newSocket.disconnect();
       }
+
       setMessages([]);
-      console.log("Dismount");
     };
   }, []);
 

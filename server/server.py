@@ -86,9 +86,11 @@ def getChats():
     for user in chats:
         room = computeRoom(username, user)
         lastMessage = ""
+        profilePic = ""
         if db.chats.find_one({'room': room}):
             lastMessage = db.chats.find_one({'room': room})['messages'][-1]['message']
-        data[user] = lastMessage
+            profilePic = db.user.find_one({'username': user})['profilePic']
+        data[user] = [lastMessage, profilePic]
     return data
 
 @app.route("/create-chat", methods = ['POST'])

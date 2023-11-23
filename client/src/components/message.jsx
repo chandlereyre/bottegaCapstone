@@ -1,28 +1,18 @@
-import { useEffect, useState } from "react";
 import defaultProfilePic from "../assets/profilePic.png";
-import axios from "axios";
+import { useState, useEffect } from "react";
 
 export default function Message({
   userName,
   handleUpdateChat,
   thisUser,
   previewMessage,
+  profilePic,
 }) {
-  const [profilePic, setProfilePic] = useState("");
+  const [prevMSG, setPrevMSG] = useState(previewMessage);
 
   useEffect(() => {
-    axios({
-      url: "http://localhost:5000/get-profile-pic",
-      method: "post",
-      data: { username: userName },
-      withCredentials: true,
-    }).then((response) => {
-      console.log(userName, response.data);
-      response.data != ""
-        ? setProfilePic("http://localhost:5000" + response.data)
-        : setProfilePic("");
-    });
-  }, []);
+    setPrevMSG(previewMessage);
+  }, [previewMessage]);
 
   async function firstFunction() {
     handleUpdateChat(null);
@@ -32,6 +22,7 @@ export default function Message({
     await firstFunction();
     handleUpdateChat(userName);
   }
+
   return (
     <div
       className="message"
@@ -41,14 +32,14 @@ export default function Message({
     >
       <div className="message-profile-pic">
         {profilePic != "" ? (
-          <img src={profilePic}></img>
+          <img src={"http://localhost:5000/" + profilePic}></img>
         ) : (
           <img src={defaultProfilePic}></img>
         )}
       </div>
       <div className="message-content">
         <div className="person-name">{userName}</div>
-        <div className="text">{previewMessage}</div>
+        <div className="text">{prevMSG}</div>
       </div>
     </div>
   );
