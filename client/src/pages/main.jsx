@@ -1,19 +1,26 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
+import axios from "axios";
 import Sidebar from "../components/sidebar";
 import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 
-function Render({ type, username, chat, handleUpdateChat }) {
+function Render({ type, username, chat, handleUpdateChat, messageList }) {
   if (type == "home") {
     return (
       <div className="home">
-        <MessageList handleUpdateChat={handleUpdateChat} thisUser={username} />
+        {/* Last messages array: [{username: username, lastMessage: lastmessage}] */}
+        <MessageList
+          handleUpdateChat={handleUpdateChat}
+          thisUser={username}
+          messageList={messageList}
+        />
         {chat !== null ? (
           <Chat
             otherUser={chat}
             handleUpdateChat={handleUpdateChat}
             username={username}
+            updateMessages={updateMessages}
           />
         ) : null}
       </div>
@@ -28,11 +35,32 @@ function Render({ type, username, chat, handleUpdateChat }) {
   }
 }
 
+function updateMessages(username, message) {}
+
 export default function Main(props) {
-  const [chat, setChat] = useState(null);
+  const [activeChat, setActiveChat] = useState(null);
+  const [msgListChats, setMsgListChats] = useState([]);
+
+  useEffect(() => {
+    getMessages();
+  }, []);
 
   function handleUpdateChat(username) {
-    setChat(username);
+    setActiveChat(username);
+  }
+
+  function getMessages() {
+    axios({
+      url: "http://localhost:5000/get-chats",
+      method: "get",
+      withCredentials: true,
+    })
+      .then((response) => {
+        setMsgListChats(response.data);
+      })
+      .catch((error) => {
+        console.log("Error getting user messages: ", error);
+      });
   }
 
   return (
@@ -46,8 +74,9 @@ export default function Main(props) {
         type={props.type}
         username={props.username}
         handleUpdateChat={handleUpdateChat}
-        setChat={setChat}
-        chat={chat}
+        setChat={setActiveChat}
+        chat={activeChat}
+        messageList={msgListChats}
       />
       ;
     </div>

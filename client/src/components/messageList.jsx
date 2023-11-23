@@ -4,23 +4,12 @@ import Message from "./message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatModal from "./chatModal";
 
-function getMessages(setChats) {
-  axios({
-    url: "http://localhost:5000/get-chats",
-    method: "get",
-    withCredentials: true,
-  })
-    .then((response) => {
-      setChats(response.data);
-    })
-    .catch((error) => {
-      console.log("Error getting user messages: ", error);
-    });
-}
-
-export default function MessageList({ handleUpdateChat, thisUser }) {
+export default function MessageList({
+  handleUpdateChat,
+  thisUser,
+  messageList,
+}) {
   const [modal, setModal] = useState(false);
-  const [chats, setChats] = useState([]);
 
   function toggleModal(setModal, modal, newMessage) {
     if (modal) setModal(false);
@@ -28,11 +17,7 @@ export default function MessageList({ handleUpdateChat, thisUser }) {
     newMessage ? getMessages(setChats) : null;
   }
 
-  useEffect(() => {
-    getMessages(setChats);
-  }, []);
-
-  const messages = chats.map((user) => (
+  const messages = messageList.map((user) => (
     <Message
       key={user}
       previewMessage="lorem"
