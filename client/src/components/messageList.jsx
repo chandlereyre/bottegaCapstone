@@ -6,7 +6,7 @@ import ChatModal from "./chatModal";
 
 function getMessages(setChats) {
   axios({
-    url: "http://localhost:5000/findchats",
+    url: "http://localhost:5000/get-chats",
     method: "get",
     withCredentials: true,
   })

@@ -73,7 +73,7 @@ def createAccount():
         db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': ""})
         return 'account created'
     
-@app.route("/findchats", methods = ['GET'])
+@app.route("/get-chats", methods = ['GET'])
 def getChats():
     username = session.get('username', None)
     return db.user.find_one({'username': username})["chats"]
@@ -172,6 +172,7 @@ def updateProfile():
 def getImage(imagename):
     return send_file(f"./img/{imagename}", mimetype="image/jpeg")
 
+# SOCKET IO / WEBSOCKET
 @socketio.on('join')
 def join_chat(data):
     room = computeRoom(data['user1'], data['user2'])
@@ -198,6 +199,7 @@ def handle_message(data):
         db.chats.update_one({'room': room}, {'$set': {'messages': messages}})
     socketio.emit('chatMessage', {'message': message, 'from': sender, 'to': recipient}, room=room)
 
+# update for arbitrary amount of users
 def computeRoom(user1, user2):
     if user1 > user2:
         temp = user2
