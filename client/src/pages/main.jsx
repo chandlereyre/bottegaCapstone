@@ -4,6 +4,7 @@ import Sidebar from "../components/sidebar";
 import MessageList from "../components/messageList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
+import logo from "../assets/chat.png";
 
 export default function Main(props) {
   const [activeChat, setActiveChat] = useState(null);
@@ -18,14 +19,12 @@ export default function Main(props) {
   }
 
   function getChats() {
-    console.log("getting messages");
     axios({
       url: "http://localhost:5000/get-chats",
       method: "get",
       withCredentials: true,
     })
       .then((response) => {
-        console.log(response.data);
         setMsgListChats(response.data);
       })
       .catch((error) => {
@@ -43,8 +42,13 @@ export default function Main(props) {
     setMsgListChats({ ...tempArray });
   }
 
-  // displays if chat isn't open
-  const message = <div> Hey There </div>;
+  // displays if a chat isn't open
+  const message = (
+    <div className="main-filler">
+      <img src={logo}></img>
+      <div className="title">Hey there, {props.username}</div>
+    </div>
+  );
 
   return (
     <div className="main-wrapper">

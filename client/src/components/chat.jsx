@@ -12,7 +12,7 @@ export default function Chat({
   updateMessages,
 }) {
   const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messageData, setMessageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const scrollRef = useRef(null);
 
@@ -21,8 +21,6 @@ export default function Chat({
   }
 
   useEffect(() => {
-    console.log("Chat Effect");
-
     // get message history
     axios({
       url: "http://localhost:5000/get-messages",
@@ -33,33 +31,17 @@ export default function Chat({
       },
       withCredentials: true,
     }).then((data) => {
-      let tempArray = messages;
+      let tempArray = messageData;
       data.data.forEach((message) => {
         tempArray.push(message);
       });
-      setMessages(tempArray);
+      setMessageData(tempArray);
 
       // set messages
-      let chatMSG = messages.map((message) => {
-        const msgClass =
-          message.from == username ? "blue-message" : "grey-message";
-        const flexClass =
-          message.from == username ? "chat-flex-blue" : "chat-flex-grey";
-        return (
-          <div className={flexClass + " chat-flex"}>
-            <div
-              className={msgClass + " chat-message"}
-              key={shortid.generate()}
-            >
-              {message.message}
-            </div>
-          </div>
-        );
-      });
-      setChatMessages(chatMSG);
+      mapMessages();
 
       sleep(50).then(() =>
-        scrollRef.current.scrollIntoView({ behavior: "smooth" })
+        scrollRef.current.scrollIntoView({ behavior: "instant" })
       );
     });
 
@@ -72,29 +54,12 @@ export default function Chat({
     });
 
     newSocket.on("chatMessage", (data) => {
-      let tempArray = messages;
+      let tempArray = messageData;
       tempArray.push(data);
-      setMessages(tempArray);
+      setMessageData(tempArray);
 
-      let chatMSG = messages.map((message) => {
-        const msgClass =
-          message.from == username ? "blue-message" : "grey-message";
-        const flexClass =
-          message.from == username ? "chat-flex-blue" : "chat-flex-grey";
-        return (
-          <div className={flexClass + " chat-flex"}>
-            <div
-              className={msgClass + " chat-message"}
-              key={shortid.generate()}
-            >
-              {message.message}
-            </div>
-          </div>
-        );
-      });
+      mapMessages();
 
-      // update messages
-      setChatMessages(chatMSG);
       updateMessages(otherUser, data);
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     });
@@ -111,9 +76,26 @@ export default function Chat({
         newSocket.disconnect();
       }
 
-      setMessages([]);
+      setMessageData([]);
     };
   }, []);
+
+  function mapMessages() {
+    const chatMSG = messageData.map((message) => {
+      const msgClass =
+        message.from == username ? "blue-message" : "grey-message";
+      const flexClass =
+        message.from == username ? "chat-flex-blue" : "chat-flex-grey";
+      return (
+        <div className={flexClass + " chat-flex"}>
+          <div className={msgClass + " chat-message"} key={shortid.generate()}>
+            {message.message}
+          </div>
+        </div>
+      );
+    });
+    setChatMessages(chatMSG);
+  }
 
   function sendMessage(message) {
     socket.emit("chatMessage", {

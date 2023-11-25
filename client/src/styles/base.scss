@@ -207,3 +207,18 @@ body {
 #scroll-div {
   height: 4em;
 }
+
+.main-filler {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  img {
+    height: 120px;
+    margin-bottom: 30px;
+  }
+  div {
+    color: $messageGrey;
+  }
+}

@@ -4,14 +4,17 @@ import { useState, useEffect } from "react";
 export default function Message({
   userName,
   handleUpdateChat,
-  thisUser,
   previewMessage,
   profilePic,
 }) {
   const [prevMSG, setPrevMSG] = useState(previewMessage);
 
   useEffect(() => {
-    setPrevMSG(previewMessage);
+    if (previewMessage.length > 20) {
+      setPrevMSG(previewMessage.substring(0, 16) + "...");
+    } else {
+      setPrevMSG(previewMessage);
+    }
   }, [previewMessage]);
 
   async function firstFunction() {
