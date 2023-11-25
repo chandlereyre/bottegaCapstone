@@ -22,7 +22,8 @@ export default function Chat({
 
   useEffect(() => {
     console.log("Chat Effect");
-    // get messages
+
+    // get message history
     axios({
       url: "http://localhost:5000/get-messages",
       method: "post",
@@ -65,7 +66,6 @@ export default function Chat({
     // socketio
     const newSocket = io("http://localhost:5000");
 
-    // join room with other user
     newSocket.emit("join", {
       user1: username,
       user2: otherUser,

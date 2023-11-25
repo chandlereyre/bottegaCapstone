@@ -10,43 +10,14 @@ export default function Main(props) {
   const [msgListChats, setMsgListChats] = useState([]);
 
   useEffect(() => {
-    getMessages();
-  }, []);
+    props.type == "home" ? getChats() : null;
+  }, [activeChat, props.type]);
 
   function handleUpdateChat(username) {
     setActiveChat(username);
   }
 
-  function Render() {
-    if (props.type == "home") {
-      return (
-        <div className="home">
-          <MessageList
-            handleUpdateChat={handleUpdateChat}
-            thisUser={props.username}
-            messageList={msgListChats}
-          />
-          {activeChat !== null ? (
-            <Chat
-              otherUser={activeChat}
-              handleUpdateChat={handleUpdateChat}
-              username={props.username}
-              updateMessages={updateMessages}
-            />
-          ) : null}
-        </div>
-      );
-    }
-    if (props.type == "profile") {
-      return (
-        <div>
-          <Profile username={props.username} />
-        </div>
-      );
-    }
-  }
-
-  function getMessages() {
+  function getChats() {
     console.log("getting messages");
     axios({
       url: "http://localhost:5000/get-chats",
@@ -58,7 +29,7 @@ export default function Main(props) {
         setMsgListChats(response.data);
       })
       .catch((error) => {
-        console.log("Error getting user messages: ", error);
+        console.log("Error getting : ", error);
       });
   }
 
@@ -72,6 +43,9 @@ export default function Main(props) {
     setMsgListChats({ ...tempArray });
   }
 
+  // displays if chat isn't open
+  const message = <div> Hey There </div>;
+
   return (
     <div className="main-wrapper">
       <div>
@@ -79,7 +53,29 @@ export default function Main(props) {
           handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
         />
       </div>
-      <Render />;
+      {props.type == "home" ? (
+        <div className="home">
+          <MessageList
+            handleUpdateChat={handleUpdateChat}
+            thisUser={props.username}
+            messageList={msgListChats}
+          />
+          {activeChat !== null ? (
+            <Chat
+              otherUser={activeChat}
+              handleUpdateChat={handleUpdateChat}
+              username={props.username}
+              updateMessages={updateMessages}
+            />
+          ) : (
+            message
+          )}
+        </div>
+      ) : (
+        <div>
+          <Profile username={props.username} />
+        </div>
+      )}
     </div>
   );
 }
