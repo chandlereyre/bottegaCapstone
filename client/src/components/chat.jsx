@@ -14,11 +14,12 @@ export default function Chat({
   const [socket, setSocket] = useState(null);
   const [messageData, setMessageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
-  const scrollRef = useRef(null);
 
-  function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  const ScrollToBottom = () => {
+    const ref = useRef();
+    useEffect(() => ref.current.scrollIntoView());
+    return <div ref={ref}></div>;
+  };
 
   useEffect(() => {
     // get message history
@@ -30,20 +31,19 @@ export default function Chat({
         user2: otherUser,
       },
       withCredentials: true,
-    }).then((data) => {
-      let tempArray = messageData;
-      data.data.forEach((message) => {
-        tempArray.push(message);
+    })
+      .then((data) => {
+        let tempArray = messageData;
+        data.data.forEach((message) => {
+          tempArray.push(message);
+        });
+        setMessageData(tempArray);
+
+        mapMessages();
+      })
+      .catch((err) => {
+        console.log("Error getting messages for this chat: ", err);
       });
-      setMessageData(tempArray);
-
-      // set messages
-      mapMessages();
-
-      sleep(50).then(() =>
-        scrollRef.current.scrollIntoView({ behavior: "instant" })
-      );
-    });
 
     // socketio
     const newSocket = io("http://localhost:5000");
@@ -61,7 +61,6 @@ export default function Chat({
       mapMessages();
 
       updateMessages(otherUser, data);
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
     });
 
     setSocket(newSocket);
@@ -94,6 +93,7 @@ export default function Chat({
         </div>
       );
     });
+
     setChatMessages(chatMSG);
   }
 
@@ -115,7 +115,7 @@ export default function Chat({
       </div>
       <div className="chat-messages-wrapper">
         <div>{chatMessages}</div>
-        <div ref={scrollRef} id="scroll-div" />
+        <ScrollToBottom />
       </div>
       <div className="chatbox-wrapper">
         <ChatBox sendMessage={sendMessage} />

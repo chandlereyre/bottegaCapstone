@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../components/sidebar";
-import MessageList from "../components/messageList";
+import ChatList from "../components/chatList";
 import Profile from "../components/profile";
 import Chat from "../components/chat";
 import logo from "../assets/chat.png";
@@ -14,8 +14,11 @@ export default function Main(props) {
     props.type == "home" ? getChats() : null;
   }, [activeChat, props.type]);
 
-  function handleUpdateChat(username) {
-    setActiveChat(username);
+  async function handleUpdateChat(username) {
+    if (username != activeChat) {
+      await setActiveChat(null);
+      setActiveChat(username);
+    }
   }
 
   function getChats() {
@@ -28,7 +31,7 @@ export default function Main(props) {
         setMsgListChats(response.data);
       })
       .catch((error) => {
-        console.log("Error getting : ", error);
+        console.log("Error getting chats: ", error);
       });
   }
 
@@ -59,10 +62,10 @@ export default function Main(props) {
       </div>
       {props.type == "home" ? (
         <div className="home">
-          <MessageList
+          <ChatList
             handleUpdateChat={handleUpdateChat}
             thisUser={props.username}
-            messageList={msgListChats}
+            chatList={msgListChats}
           />
           {activeChat !== null ? (
             <Chat

@@ -23,10 +23,14 @@ export default function chatModal({ toggleModal, setModal, modal }) {
         recipient: recipient,
       },
       withCredentials: true,
-    }).then(() => {
-      setRecipient("");
-      toggleModal(setModal, modal, true);
-    });
+    })
+      .then(() => {
+        setRecipient("");
+        toggleModal(setModal, modal, true);
+      })
+      .catch((err) => {
+        console.log("Error creating chat: ", err);
+      });
   }
 
   return (

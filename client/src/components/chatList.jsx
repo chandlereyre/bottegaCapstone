@@ -1,14 +1,9 @@
 import { React, useState, useEffect } from "react";
-import axios from "axios";
-import Message from "./message";
+import ChatPreview from "./chatPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatModal from "./chatModal";
 
-export default function MessageList({
-  handleUpdateChat,
-  thisUser,
-  messageList,
-}) {
+export default function MessageList({ handleUpdateChat, chatList }) {
   const [modal, setModal] = useState(false);
 
   function toggleModal(setModal, modal, newMessage) {
@@ -17,14 +12,13 @@ export default function MessageList({
     newMessage ? getMessages(setChats) : null;
   }
 
-  const tempMessages = Object.keys(messageList).map((user) => (
-    <Message
+  const chats = Object.keys(chatList).map((user) => (
+    <ChatPreview
       key={user}
-      previewMessage={messageList[user][0]}
+      previewMessage={chatList[user][0]}
       userName={user}
       handleUpdateChat={handleUpdateChat}
-      thisUser={thisUser}
-      profilePic={messageList[user][1]}
+      profilePic={chatList[user][1]}
     />
   ));
 
@@ -40,7 +34,7 @@ export default function MessageList({
         </a>
       </div>
       <div className="message-divider"></div>
-      <div className="messagelist-content-wrapper">{tempMessages}</div>
+      <div className="messagelist-content-wrapper">{chats}</div>
 
       {modal ? (
         <ChatModal

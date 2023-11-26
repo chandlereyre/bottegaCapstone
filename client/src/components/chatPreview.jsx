@@ -1,7 +1,7 @@
 import defaultProfilePic from "../assets/profilePic.png";
 import { useState, useEffect } from "react";
 
-export default function Message({
+export default function chatPreview({
   userName,
   handleUpdateChat,
   previewMessage,
@@ -17,12 +17,7 @@ export default function Message({
     }
   }, [previewMessage]);
 
-  async function firstFunction() {
-    handleUpdateChat(null);
-  }
-
-  async function secondFunction() {
-    await firstFunction();
+  function updateChat() {
     handleUpdateChat(userName);
   }
 
@@ -30,7 +25,7 @@ export default function Message({
     <div
       className="message"
       onClick={() => {
-        secondFunction();
+        updateChat();
       }}
     >
       <div className="message-profile-pic">

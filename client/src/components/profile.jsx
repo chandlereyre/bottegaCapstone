@@ -12,7 +12,7 @@ export default function Profile({ username }) {
 
   useEffect(() => {
     getProfileInfo();
-  }, []);
+  }, [username]);
 
   function getProfileInfo() {
     axios({
@@ -22,13 +22,17 @@ export default function Profile({ username }) {
         username: username,
       },
       withCredentials: true,
-    }).then((response) => {
-      setBio(response.data.bio);
-      setFormUsername(response.data.username);
-      response.data.profilePic != ""
-        ? setProfilePic("http://localhost:5000/" + response.data.profilePic)
-        : null;
-    });
+    })
+      .then((response) => {
+        setBio(response.data.bio);
+        setFormUsername(response.data.username);
+        response.data.profilePic != ""
+          ? setProfilePic("http://localhost:5000/" + response.data.profilePic)
+          : null;
+      })
+      .catch((err) => {
+        console.log("Error getting profile info: ", err);
+      });
   }
 
   function handleBioChange(event) {
@@ -46,10 +50,13 @@ export default function Profile({ username }) {
       method: "post",
       data: { bio: bio, profilePic: profilePic },
       withCredentials: true,
-    }).then((response) => {
-      getProfileInfo();
-      setMessage("Profile Updated!");
-    });
+    })
+      .then(() => {
+        setMessage("Profile Updated!");
+      })
+      .catch((err) => {
+        console.log("Error updating profile: ", err);
+      });
   }
 
   return (

@@ -48,15 +48,19 @@ export default class Signup extends Component {
           password: this.state.password,
         },
         withCredentials: true,
-      }).then((response) => {
-        if (response.data == "user already exists") {
-          this.setState({ errorMessage: response.data });
-        } else if (response.data == "account created") {
-          this.setState({
-            redirect: true,
-          });
-        }
-      });
+      })
+        .then((response) => {
+          if (response.data == "user already exists") {
+            this.setState({ errorMessage: response.data });
+          } else if (response.data == "account created") {
+            this.setState({
+              redirect: true,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("Error signing up: ", err);
+        });
     }
   }
 
