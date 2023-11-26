@@ -5,6 +5,7 @@ import axios from "axios";
 export default function chatModal({ toggleModal, setModal, modal }) {
   const [recipient, setRecipient] = useState("");
   const [recipientArr, setRecipientArr] = useState([]);
+  const [message, setMessage] = useState("");
 
   function handleChange(event) {
     setRecipient(event.target.value);
@@ -24,10 +25,28 @@ export default function chatModal({ toggleModal, setModal, modal }) {
   }
 
   function addRecipient() {
-    const tempArray = recipientArr;
-    tempArray.push(recipient);
-    setRecipientArr(tempArray);
-    setRecipient("");
+    // TODO check if recipient is valid
+    axios({
+      url: "http://localhost:5000/check-user",
+      method: "post",
+      data: { username: recipient },
+      withCredentials: true,
+    })
+      .then((response) => {
+        if (response.data == "user found") {
+          const tempArray = recipientArr;
+          tempArray.push(recipient);
+          setRecipientArr(tempArray);
+          setRecipient("");
+          setMessage("");
+        } else {
+          setMessage("User not found.");
+          setRecipient("");
+        }
+      })
+      .catch((err) => {
+        console.log("Error checking recipient: ", err);
+      });
   }
 
   function createChat() {
@@ -35,12 +54,12 @@ export default function chatModal({ toggleModal, setModal, modal }) {
       url: "http://localhost:5000/create-chat",
       method: "post",
       data: {
-        recipient: recipient,
+        recipients: recipientArr,
       },
       withCredentials: true,
     })
       .then(() => {
-        setRecipient("");
+        setRecipientArr([]);
         toggleModal(setModal, modal, true);
       })
       .catch((err) => {
@@ -102,6 +121,11 @@ export default function chatModal({ toggleModal, setModal, modal }) {
             Create Chat
           </button>
         </div>
+        {message != "" ? (
+          <div className="error-message" id="chat-modal-message">
+            <p>{message}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

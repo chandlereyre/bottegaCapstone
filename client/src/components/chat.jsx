@@ -49,8 +49,7 @@ export default function Chat({
     const newSocket = io("http://localhost:5000");
 
     newSocket.emit("join", {
-      user1: username,
-      user2: otherUser,
+      users: [otherUser, username],
     });
 
     newSocket.on("chatMessage", (data) => {
@@ -67,8 +66,7 @@ export default function Chat({
 
     return () => {
       newSocket.emit("leave", {
-        user1: username,
-        user2: otherUser,
+        users: [username, otherUser],
       });
 
       if (newSocket) {
@@ -100,8 +98,8 @@ export default function Chat({
   function sendMessage(message) {
     socket.emit("chatMessage", {
       message: message,
-      user1: username,
-      user2: otherUser,
+      sender: username,
+      recipients: [otherUser],
     });
   }
 

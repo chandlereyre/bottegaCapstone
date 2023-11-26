@@ -3,7 +3,10 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../assets/chat.png";
 
-export default function (handleSuccessfulLogout) {
+export default function Sidebar({ handleSuccessfulLogout }) {
+  function handleLogout() {
+    handleSuccessfulLogout();
+  }
   return (
     <div className="sidebar">
       <div id="sidebar-logo">
@@ -20,7 +23,9 @@ export default function (handleSuccessfulLogout) {
       <div id="sidebar-logout" className="icon">
         <FontAwesomeIcon
           icon="fa-solid fa-right-from-bracket"
-          onClick={() => handleSuccessfulLogout()}
+          onClick={() => {
+            handleLogout();
+          }}
         />
       </div>
     </div>

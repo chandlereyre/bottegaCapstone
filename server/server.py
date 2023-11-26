@@ -63,6 +63,13 @@ def logout():
     session.pop('username')
     return 'session deleted'
 
+@app.route("/check-user", methods = ['POST'])
+def checkUser():
+    if db.user.find_one({'username': request.json['username']}):
+        return "user found"
+    else:
+        return "user not found"
+    
 @app.route("/create-account", methods = ['POST'])
 def createAccount():
     username = request.json['username']
@@ -83,33 +90,41 @@ def getChats():
     username = session.get('username', None)
     data = {}
     chats = db.user.find_one({'username': username})["chats"]
-    for user in chats:
-        room = computeRoom([username, user])
+    for room in chats:
         lastMessage = ""
         profilePic = ""
         if db.chats.find_one({'room': room}):
-            lastMessage = db.chats.find_one({'room': room})['messages'][-1]['message']
-            profilePic = db.user.find_one({'username': user})['profilePic']
-        data[user] = [lastMessage, profilePic]
+            room = db.chats.find_one({'room': room})
+            if len(room['messages']) > 0:
+                lastMessage = room['messages'][-1]['message']
+            if len(room['users']) == 2:
+                profilePic = db.user.find_one({'username': room['users'][0]})['profilePic']
+            otherUser = ""
+            if room['users'][0] == username:
+                otherUser = room['users'][1]
+            else:
+                otherUser = room['users'][0]
+        data[otherUser] = [lastMessage, profilePic]
     return data
 
 @app.route("/create-chat", methods = ['POST'])
 def createChat():
-    recipient = request.json['recipient']
+    recipientsArr = request.json['recipients']
     username = session.get('username', None)
-    if db.user.find_one({'username': recipient}):
-        chats = db.user.find_one({'username': username})["chats"]
-        if recipient not in chats:
-            # update chats for current user
-            chats.append(recipient)
-            db.user.update_one({'username': username}, {"$set": {"chats": chats}})
-            # update chats for recipient
-            chats = db.user.find_one({'username': recipient})["chats"]
-            chats.append(username)
-            db.user.update_one({'username': recipient}, {"$set": {"chats": chats}})
-        return "recipient"
-    else:
-        return "user not found"
+    recipientsArr.append(username)
+    room = computeRoom(recipientsArr)
+
+    if db.chats.find_one({'room': room}):
+        return "Chat already exists"
+
+    for user in recipientsArr:
+        if db.user.find_one({'username': user}):
+            chats = db.user.find_one({'username': user})["chats"]
+            chats.append(room)
+            db.user.update_one({'username': user}, {"$set": {"chats": chats}})
+    db.chats.insert_one({'room': room, 'messages': [], 'users': recipientsArr, 'profilePic': ""})
+
+    return "Chat created"
     
 @app.route("/get-messages", methods = ['POST'])
 def getMessages():
@@ -181,29 +196,27 @@ def getImage(imagename):
 # SOCKET IO / WEBSOCKET
 @socketio.on('join')
 def join_chat(data):
-    room = computeRoom([data['user1'], data['user2']])
+    room = computeRoom(data['users'])
     join_room(room)
 
 @socketio.on('leave')
 def leave_chat(data):
-    room = computeRoom([data['user1'], data['user2']])
+    room = computeRoom(data['users'])
     leave_room(room)
 
 @socketio.on('chatMessage')
 def handle_message(data):
-    # print('received message: ' + data['message'])
     message = data['message']
-    recipient = data['user2']
-    sender = data['user1']
-    room = computeRoom([data['user1'], data['user2']])
-    # Add thing
-    if not db.chats.find_one({'room': room}):
-        db.chats.insert_one({'room': room, 'messages': [{'message': message, 'to': recipient, 'from': sender}]})
-    else:
+    sender = data['sender']
+    recipients = data['recipients']
+    room = computeRoom([sender] + recipients)
+
+    if db.chats.find_one({'room': room}):
         messages = db.chats.find_one({'room': room})['messages']
-        messages.append({'message': message, 'to': recipient, 'from': sender})
+        messages.append({'message': message, 'from': sender})
         db.chats.update_one({'room': room}, {'$set': {'messages': messages}})
-    socketio.emit('chatMessage', {'message': message, 'from': sender, 'to': recipient}, room=room)
+
+    socketio.emit('chatMessage', {'message': message, 'from': sender}, room=room)
 
 def computeRoom(users):
     users.sort()

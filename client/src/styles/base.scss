@@ -265,3 +265,9 @@ body {
     color: white;
   }
 }
+
+#chat-modal-message {
+  z-index: 5;
+  position: absolute;
+  margin-top: 20rem;
+}

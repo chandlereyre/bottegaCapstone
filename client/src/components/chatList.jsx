@@ -3,13 +3,13 @@ import ChatPreview from "./chatPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatModal from "./chatModal";
 
-export default function MessageList({ handleUpdateChat, chatList }) {
+export default function MessageList({ handleUpdateChat, chatList, getChats }) {
   const [modal, setModal] = useState(false);
 
   function toggleModal(setModal, modal, newMessage) {
     if (modal) setModal(false);
     if (!modal) setModal(true);
-    newMessage ? getMessages(setChats) : null;
+    newMessage ? getChats() : null;
   }
 
   const chats = Object.keys(chatList).map((user) => (

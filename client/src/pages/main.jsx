@@ -45,6 +45,10 @@ export default function Main(props) {
     setMsgListChats({ ...tempArray });
   }
 
+  function handleLogout() {
+    props.handleSuccessfulLogout();
+  }
+
   // displays if a chat isn't open
   const message = (
     <div className="main-filler">
@@ -56,9 +60,7 @@ export default function Main(props) {
   return (
     <div className="main-wrapper">
       <div>
-        <Sidebar
-          handleSuccessfulLogout={() => props.handleSuccessfulLogout()}
-        />
+        <Sidebar handleSuccessfulLogout={() => handleLogout()} />
       </div>
       {props.type == "home" ? (
         <div className="home">
@@ -66,6 +68,7 @@ export default function Main(props) {
             handleUpdateChat={handleUpdateChat}
             thisUser={props.username}
             chatList={msgListChats}
+            getChats={getChats}
           />
           {activeChat !== null ? (
             <Chat
