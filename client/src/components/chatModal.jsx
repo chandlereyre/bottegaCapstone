@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function chatModal({ toggleModal, setModal, modal }) {
   const [recipient, setRecipient] = useState("");
+  const [recipientArr, setRecipientArr] = useState([]);
 
   function handleChange(event) {
     setRecipient(event.target.value);
@@ -11,9 +12,23 @@ export default function chatModal({ toggleModal, setModal, modal }) {
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      createChat();
+      addRecipient();
     }
   };
+
+  function removeRecipient(event) {
+    const recipient = event.target.innerHTML;
+    const tempArray = recipientArr;
+    tempArray.splice(recipient, 1);
+    setRecipientArr([...tempArray]);
+  }
+
+  function addRecipient() {
+    const tempArray = recipientArr;
+    tempArray.push(recipient);
+    setRecipientArr(tempArray);
+    setRecipient("");
+  }
 
   function createChat() {
     axios({
@@ -60,10 +75,32 @@ export default function chatModal({ toggleModal, setModal, modal }) {
               onChange={handleChange}
               value={recipient}
             />
-            <button className="login-button" onClick={createChat}>
-              Create Chat
-            </button>
+            <a id="add-recipient-button" onClick={addRecipient}>
+              <FontAwesomeIcon icon="fa-solid fa-plus" />
+            </a>
           </div>
+          <div id="recipients-wrapper">
+            {recipientArr.map((recipient) => {
+              return (
+                <div
+                  key={recipient}
+                  className="recipient"
+                  onClick={(event) => {
+                    removeRecipient(event);
+                  }}
+                >
+                  {recipient}
+                </div>
+              );
+            })}
+          </div>
+          <button
+            className="login-button"
+            id="create-chat-button"
+            onClick={createChat}
+          >
+            Create Chat
+          </button>
         </div>
       </div>
     </div>

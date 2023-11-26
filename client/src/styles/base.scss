@@ -124,8 +124,7 @@ body {
 
 .chat-modal {
   position: relative;
-  height: 15rem;
-  width: 35rem;
+  width: 30rem;
   margin-bottom: 10rem;
   background-color: $offWhite;
   border-radius: 1rem;
@@ -139,7 +138,7 @@ body {
   align-items: center;
   margin-bottom: 3rem;
   .icon {
-    height: 35px;
+    height: 30px;
     :hover {
       color: $accent;
     }
@@ -149,7 +148,7 @@ body {
 .modal-input {
   height: 3rem;
   display: grid;
-  grid-template-columns: 4fr 1.2fr;
+  grid-template-columns: 7fr 1fr;
   gap: 1rem;
   .input {
     height: 100%;
@@ -220,5 +219,49 @@ body {
   }
   div {
     color: $messageGrey;
+  }
+}
+
+#add-recipient-button {
+  font-size: 2em;
+  background-color: $lightGrey;
+  color: $messageGrey;
+  cursor: pointer;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  text-align: center;
+  margin: auto;
+  border-radius: 50%;
+  transition: 0.05s ease-in;
+  &:hover {
+    color: white;
+    background-color: $accent;
+  }
+}
+
+#create-chat-button {
+  margin-top: 1rem;
+}
+
+#recipients-wrapper {
+  display: flex;
+  justify-content: left;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.recipient {
+  background-color: $lightGrey;
+  color: $background;
+  display: flex;
+  justify-content: space-around;
+  padding: 5px;
+  border-radius: 5px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    background-color: $accent;
+    color: white;
   }
 }
