@@ -94,17 +94,23 @@ def getChats():
         lastMessage = ""
         profilePic = ""
         if db.chats.find_one({'room': room}):
-            room = db.chats.find_one({'room': room})
-            if len(room['messages']) > 0:
-                lastMessage = room['messages'][-1]['message']
-            if len(room['users']) == 2:
-                profilePic = db.user.find_one({'username': room['users'][0]})['profilePic']
-            otherUser = ""
-            if room['users'][0] == username:
-                otherUser = room['users'][1]
-            else:
-                otherUser = room['users'][0]
-        data[otherUser] = [lastMessage, profilePic]
+            roomOBJ = db.chats.find_one({'room': room})
+            if len(roomOBJ['messages']) > 0:
+                lastMessage = roomOBJ['messages'][-1]['message']
+            # for 2 users
+            if len(roomOBJ['users']) == 2:
+                profilePic = db.user.find_one({'username': roomOBJ['users'][0]})['profilePic']
+                otherUser = ""
+                if roomOBJ['users'][0] == username:
+                    otherUser = roomOBJ['users'][1]
+                else:
+                    otherUser = roomOBJ['users'][0]
+                data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': [otherUser], 'group': False}
+            if len(roomOBJ['users']) > 2:
+                profilePic = "" # do something better here later
+                otherUsers = roomOBJ['users']
+                otherUsers.remove(username)
+                data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': otherUsers, 'group': True}
     return data
 
 @app.route("/create-chat", methods = ['POST'])
@@ -128,7 +134,7 @@ def createChat():
     
 @app.route("/get-messages", methods = ['POST'])
 def getMessages():
-    room = computeRoom([request.json['user1'], request.json['user2']])
+    room = computeRoom(request.json['users'])
     if db.chats.find_one({'room': room}):
         messages = db.chats.find_one({'room': room})['messages']
         return messages
@@ -216,7 +222,7 @@ def handle_message(data):
         messages.append({'message': message, 'from': sender})
         db.chats.update_one({'room': room}, {'$set': {'messages': messages}})
 
-    socketio.emit('chatMessage', {'message': message, 'from': sender}, room=room)
+    socketio.emit('chatMessage', {'message': message, 'from': sender, 'room': room}, room=room)
 
 def computeRoom(users):
     users.sort()

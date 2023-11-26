@@ -12,15 +12,18 @@ export default function MessageList({ handleUpdateChat, chatList, getChats }) {
     newMessage ? getChats() : null;
   }
 
-  const chats = Object.keys(chatList).map((user) => (
-    <ChatPreview
-      key={user}
-      previewMessage={chatList[user][0]}
-      userName={user}
-      handleUpdateChat={handleUpdateChat}
-      profilePic={chatList[user][1]}
-    />
-  ));
+  const chats = Object.keys(chatList).map((chat) => {
+    return (
+      <ChatPreview
+        key={chatList[chat].with}
+        previewMessage={chatList[chat].lastMessage}
+        users={chatList[chat].with}
+        handleUpdateChat={handleUpdateChat}
+        profilePic={chatList[chat].profilePic}
+        group={chatList[chat].group}
+      />
+    );
+  });
 
   return (
     <div className="messagelist-wrapper">

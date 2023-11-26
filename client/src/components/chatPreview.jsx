@@ -2,10 +2,11 @@ import defaultProfilePic from "../assets/profilePic.png";
 import { useState, useEffect } from "react";
 
 export default function chatPreview({
-  userName,
+  users,
   handleUpdateChat,
   previewMessage,
   profilePic,
+  group,
 }) {
   const [prevMSG, setPrevMSG] = useState(previewMessage);
 
@@ -18,7 +19,7 @@ export default function chatPreview({
   }, [previewMessage]);
 
   function updateChat() {
-    handleUpdateChat(userName);
+    handleUpdateChat(users);
   }
 
   return (
@@ -36,7 +37,11 @@ export default function chatPreview({
         )}
       </div>
       <div className="message-content">
-        <div className="person-name">{userName}</div>
+        {group ? (
+          <div className="person-name">{users.map((user) => user + ", ")}</div>
+        ) : (
+          <div className="person-name">{users}</div>
+        )}
         <div className="text">{prevMSG}</div>
       </div>
     </div>

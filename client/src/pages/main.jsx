@@ -7,17 +7,26 @@ import Chat from "../components/chat";
 import logo from "../assets/chat.png";
 
 export default function Main(props) {
-  const [activeChat, setActiveChat] = useState(null);
+  const [activeChat, setActiveChat] = useState([]);
   const [msgListChats, setMsgListChats] = useState([]);
 
   useEffect(() => {
     props.type == "home" ? getChats() : null;
   }, [activeChat, props.type]);
 
-  async function handleUpdateChat(username) {
-    if (username != activeChat) {
-      await setActiveChat(null);
-      setActiveChat(username);
+  async function handleUpdateChat(users) {
+    // for 2 people
+    if (users.length == 1) {
+      if (users.toString() !== activeChat.toString()) {
+        await setActiveChat([]);
+        setActiveChat(users);
+      }
+    }
+
+    // for groups
+    if (users.toString() !== activeChat.toString()) {
+      await setActiveChat([]);
+      setActiveChat(users);
     }
   }
 
@@ -35,11 +44,11 @@ export default function Main(props) {
       });
   }
 
-  function updateMessages(username, message) {
+  function updateMessages(users, data) {
     let tempArray = msgListChats;
     Object.keys(tempArray).forEach((key) => {
-      if (key == username) {
-        tempArray[key][0] = message.message;
+      if (key == data.room) {
+        tempArray[key].lastMessage = data.message;
       }
     });
     setMsgListChats({ ...tempArray });
@@ -70,9 +79,9 @@ export default function Main(props) {
             chatList={msgListChats}
             getChats={getChats}
           />
-          {activeChat !== null ? (
+          {activeChat.length > 0 ? (
             <Chat
-              otherUser={activeChat}
+              otherUsers={activeChat}
               handleUpdateChat={handleUpdateChat}
               username={props.username}
               updateMessages={updateMessages}

@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Chat({
   username,
-  otherUser,
+  otherUsers,
   handleUpdateChat,
   updateMessages,
 }) {
@@ -27,8 +27,7 @@ export default function Chat({
       url: "http://localhost:5000/get-messages",
       method: "post",
       data: {
-        user1: username,
-        user2: otherUser,
+        users: [username].concat(otherUsers),
       },
       withCredentials: true,
     })
@@ -49,7 +48,7 @@ export default function Chat({
     const newSocket = io("http://localhost:5000");
 
     newSocket.emit("join", {
-      users: [otherUser, username],
+      users: [username].concat(otherUsers),
     });
 
     newSocket.on("chatMessage", (data) => {
@@ -59,14 +58,14 @@ export default function Chat({
 
       mapMessages();
 
-      updateMessages(otherUser, data);
+      updateMessages(otherUsers, data);
     });
 
     setSocket(newSocket);
 
     return () => {
       newSocket.emit("leave", {
-        users: [username, otherUser],
+        users: [username].concat(otherUsers),
       });
 
       if (newSocket) {
@@ -84,10 +83,8 @@ export default function Chat({
       const flexClass =
         message.from == username ? "chat-flex-blue" : "chat-flex-grey";
       return (
-        <div className={flexClass + " chat-flex"}>
-          <div className={msgClass + " chat-message"} key={shortid.generate()}>
-            {message.message}
-          </div>
+        <div key={shortid.generate()} className={flexClass + " chat-flex"}>
+          <div className={msgClass + " chat-message"}>{message.message}</div>
         </div>
       );
     });
@@ -99,15 +96,15 @@ export default function Chat({
     socket.emit("chatMessage", {
       message: message,
       sender: username,
-      recipients: [otherUser],
+      recipients: otherUsers,
     });
   }
 
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
-        <div className="title">Chat with {otherUser}</div>
-        <div className="chat-close" onClick={() => handleUpdateChat(null)}>
+        <div className="title">Chat with {otherUsers}</div>
+        <div className="chat-close" onClick={() => handleUpdateChat([])}>
           <FontAwesomeIcon icon="fa-solid fa-x" />
         </div>
       </div>
