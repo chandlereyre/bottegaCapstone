@@ -204,15 +204,23 @@ def getImage(imagename):
     return send_file(f"./img/{imagename}", mimetype=f"image/{file_type}")
 
 # SOCKET IO / WEBSOCKET
-@socketio.on('join')
-def join_chat(data):
+@socketio.on('joinWithUsers')
+def join_chat_with_users(data):
     room = computeRoom(data['users'])
     join_room(room)
+
+@socketio.on('joinWithRoom')
+def join_chat_with_room(data):
+    join_room(data['room'])
 
 @socketio.on('leave')
 def leave_chat(data):
     room = computeRoom(data['users'])
     leave_room(room)
+
+@socketio.on('leaveWithRoom')
+def leave_with_room(data):
+    leave_room(data['room'])
 
 @socketio.on('chatMessage')
 def handle_message(data):

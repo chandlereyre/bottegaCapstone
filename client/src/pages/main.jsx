@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios";
+import io from "socket.io-client";
 import Sidebar from "../components/sidebar";
 import ChatList from "../components/chatList";
 import Profile from "../components/profile";
@@ -12,7 +13,35 @@ export default function Main(props) {
 
   useEffect(() => {
     props.type == "home" ? getChats() : null;
-  }, [activeChat, props.type]);
+    let webSocket;
+    if (props.type == "home") {
+      webSocket = io("http://localhost:5000");
+
+      Object.keys(msgListChats).forEach((message) => {
+        webSocket.emit("joinWithRoom", {
+          room: message,
+        });
+      });
+
+      webSocket.on("chatMessage", (data) => {
+        updateMessages(data);
+        console.log(data);
+      });
+    }
+
+    return () => {
+      if (webSocket) {
+        console.log("leaving websocket");
+        Object.keys(msgListChats).forEach((message) => {
+          webSocket.emit("leaveWithRoom", {
+            room: message,
+          });
+        });
+
+        webSocket.disconnect();
+      }
+    };
+  }, [props.type]);
 
   async function handleUpdateChat(users) {
     // for 2 people
@@ -44,7 +73,7 @@ export default function Main(props) {
       });
   }
 
-  function updateMessages(users, data) {
+  function updateMessages(data) {
     let tempArray = msgListChats;
     Object.keys(tempArray).forEach((key) => {
       if (key == data.room) {

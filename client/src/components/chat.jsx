@@ -65,7 +65,7 @@ export default function Chat({
     // socketio
     const newSocket = io("http://localhost:5000");
 
-    newSocket.emit("join", {
+    newSocket.emit("joinWithUsers", {
       users: [username].concat(otherUsers),
     });
 
@@ -96,14 +96,8 @@ export default function Chat({
 
   function mapMessages() {
     const chatMSG = messageData.map((message, index, array) => {
-      // check when to assign a profile pic
+      // check when to assign a profile pic / header
       let useProfilePic = false;
-      // if (array[index + 1] && array[index + 1].from != message.from) {
-      //   useProfilePic = true;
-      // } else if (!array[index + 1]) {
-      //   useProfilePic = true;
-      // }
-      // check when to use name in header
       let useHeader = false;
       if (array[index - 1] && array[index - 1].from != message.from) {
         useHeader = true;
