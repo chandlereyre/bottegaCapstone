@@ -42,6 +42,7 @@ def login():
             return 'incorrect password'
         else:
             return 'user not found'
+        
     if request.method == 'GET':
         data = {}
         if 'username' in session:

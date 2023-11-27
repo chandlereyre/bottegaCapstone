@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 import { nanoid } from "nanoid";
 import axios from "axios";
-import profilePic from "../assets/profilePic.png";
 
 export default function Chat({
   username,
@@ -39,28 +38,29 @@ export default function Chat({
           tempArray.push(message);
         });
         setMessageData(tempArray);
+      })
+      .then(() => {
+        // get profile pictures
+        [username].concat(otherUsers).forEach((user) => {
+          axios({
+            url: "http://localhost:5000/get-profile-pic",
+            method: "post",
+            data: {
+              username: user,
+            },
+            withCredentials: true,
+          }).then((response) => {
+            const tempDict = profilePics;
+            tempDict[user] = response.data;
+            setProfilePics(tempDict);
 
-        mapMessages();
+            mapMessages();
+          });
+        });
       })
       .catch((err) => {
         console.log("Error getting messages for this chat: ", err);
       });
-
-    // get profile pictures
-    [username].concat(otherUsers).forEach((user) => {
-      axios({
-        url: "http://localhost:5000/get-profile-pic",
-        method: "post",
-        data: {
-          username: user,
-        },
-        withCredentials: true,
-      }).then((response) => {
-        const tempDict = profilePics;
-        tempDict[user] = response.data;
-        setProfilePics(tempDict);
-      });
-    });
 
     // socketio
     const newSocket = io("http://localhost:5000");
