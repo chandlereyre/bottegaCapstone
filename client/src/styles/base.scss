@@ -28,6 +28,14 @@ body {
   font-family: "Gabarito", sans-serif;
 }
 
+.group-title {
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.5em;
+  line-height: 2.5em;
+  font-family: "Gabarito", sans-serif;
+}
+
 .home {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -57,6 +65,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  overflow: hidden;
 }
 
 .chatbox-wrapper {

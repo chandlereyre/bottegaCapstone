@@ -2,7 +2,7 @@ import { React, useEffect, useState, useRef } from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
-import shortid from "shortid";
+import { nanoid } from "nanoid";
 import axios from "axios";
 
 export default function Chat({
@@ -83,7 +83,7 @@ export default function Chat({
       const flexClass =
         message.from == username ? "chat-flex-blue" : "chat-flex-grey";
       return (
-        <div key={shortid.generate()} className={flexClass + " chat-flex"}>
+        <div key={nanoid()} className={flexClass + " chat-flex"}>
           <div className={msgClass + " chat-message"}>{message.message}</div>
         </div>
       );
@@ -103,7 +103,19 @@ export default function Chat({
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
-        <div className="title">Chat with {otherUsers}</div>
+        {otherUsers.length == 1 ? (
+          <div className="title">Chat with {otherUsers}</div>
+        ) : (
+          <div className="group-title">
+            Chat with{" "}
+            {otherUsers[0] +
+              ", " +
+              otherUsers[1] +
+              ", and " +
+              (otherUsers.length - 2) +
+              " others."}
+          </div>
+        )}
         <div className="chat-close" onClick={() => handleUpdateChat([])}>
           <FontAwesomeIcon icon="fa-solid fa-x" />
         </div>

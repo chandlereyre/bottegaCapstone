@@ -99,12 +99,12 @@ def getChats():
                 lastMessage = roomOBJ['messages'][-1]['message']
             # for 2 users
             if len(roomOBJ['users']) == 2:
-                profilePic = db.user.find_one({'username': roomOBJ['users'][0]})['profilePic']
                 otherUser = ""
                 if roomOBJ['users'][0] == username:
                     otherUser = roomOBJ['users'][1]
                 else:
                     otherUser = roomOBJ['users'][0]
+                profilePic = db.user.find_one({'username': otherUser})['profilePic']
                 data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': [otherUser], 'group': False}
             if len(roomOBJ['users']) > 2:
                 profilePic = "" # do something better here later
@@ -168,8 +168,6 @@ def updateProfile():
     user = session.get('username', None)
     bio = request.json['bio']
 
-    print(request.json['profilePic'][0:5])
-    
     if (request.json['profilePic'][0:5] == 'data:'):
         # convert dataURL to image
         head, image = request.json['profilePic'].split(',', 1)
@@ -197,7 +195,8 @@ def updateProfile():
 # IMAGE HOSTING
 @app.route('/img/<imagename>', methods=["GET"])
 def getImage(imagename):
-    return send_file(f"./img/{imagename}", mimetype="image/jpeg")
+    _, file_type = imagename.split('.')
+    return send_file(f"./img/{imagename}", mimetype=f"image/{file_type}")
 
 # SOCKET IO / WEBSOCKET
 @socketio.on('join')

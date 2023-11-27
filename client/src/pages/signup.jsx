@@ -27,7 +27,9 @@ export default class Signup extends Component {
 
   handleChange(event) {
     this.setState({
-      [event.target.name]: event.target.value.replace(/\s/g, ""),
+      [event.target.name]: event.target.value
+        .replace(/\s/g, "")
+        .replace(/\./g, ""),
       errorText: "",
     });
   }
