@@ -188,8 +188,8 @@ body {
   padding: 0.7em;
   padding-bottom: 0.7em;
   text-align: left;
-  border-radius: 1em;
-  margin: 0.5em;
+  border-radius: 0.75em;
+  margin: 0.1em 0.5em;
   font-size: 1.1em;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -288,20 +288,21 @@ body {
   height: 45px;
   width: 45px;
   border-radius: 50%;
+  transform: translateY(-20px);
 }
 
 .chat-message-wrapper {
-  display: grid;
-  grid-template-rows: 0.2fr 1fr;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-header {
+  font-weight: bold;
   margin-top: 1em;
+  margin-bottom: 0.3em;
+  margin-right: 55px;
+  margin-left: 55px;
 }
-
-.message-this-user {
-  font-weight: bold;
-  text-align: right;
-}
-
-.message-other-user {
-  font-weight: bold;
-  text-align: left;
+.white-space-no-pfp {
+  width: 45px;
 }

@@ -95,19 +95,46 @@ export default function Chat({
   }, []);
 
   function mapMessages() {
-    const chatMSG = messageData.map((message) => {
+    const chatMSG = messageData.map((message, index, array) => {
+      // check when to assign a profile pic
+      let useProfilePic = false;
+      // if (array[index + 1] && array[index + 1].from != message.from) {
+      //   useProfilePic = true;
+      // } else if (!array[index + 1]) {
+      //   useProfilePic = true;
+      // }
+      // check when to use name in header
+      let useHeader = false;
+      if (array[index - 1] && array[index - 1].from != message.from) {
+        useHeader = true;
+        useProfilePic = true;
+      } else if (!array[index - 1]) {
+        useHeader = true;
+        useProfilePic = true;
+      }
+
+      // return message div based on sender
       if (message.from == username) {
         return (
           <div key={nanoid()} className="chat-message-wrapper">
-            <div className="message-this-user">{message.from}</div>
+            {useHeader ? (
+              <div className="message-header" style={{ textAlign: "right" }}>
+                {" "}
+                {message.from}{" "}
+              </div>
+            ) : null}
             <div className="chat-flex-blue chat-flex">
               <div className={"blue-message chat-message"}>
                 {message.message}
               </div>
-              <img
-                className="chat-profile-pic"
-                src={profilePics[message.from]}
-              />
+              {useProfilePic ? (
+                <img
+                  className="chat-profile-pic"
+                  src={profilePics[message.from]}
+                />
+              ) : (
+                <div className="white-space-no-pfp" />
+              )}
             </div>
           </div>
         );
@@ -115,13 +142,22 @@ export default function Chat({
         return (
           <div key={nanoid()} className="chat-message-wrapper">
             <div className="chat-top">
-              <div className="message-other-user">{message.from}</div>
+              {useHeader ? (
+                <div className="message-header" style={{ textAlign: "left" }}>
+                  {" "}
+                  {message.from}{" "}
+                </div>
+              ) : null}
             </div>
             <div className="chat-flex-grey chat-flex">
-              <img
-                className="chat-profile-pic"
-                src={profilePics[message.from]}
-              />
+              {useProfilePic ? (
+                <img
+                  className="chat-profile-pic"
+                  src={profilePics[message.from]}
+                />
+              ) : (
+                <div className="white-space-no-pfp" />
+              )}
               <div className={" grey-message chat-message"}>
                 {message.message}
               </div>
