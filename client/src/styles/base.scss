@@ -171,6 +171,8 @@ body {
 
 .chat-flex {
   display: flex;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
   // width: 100%;
 }
 
@@ -203,6 +205,7 @@ body {
 }
 
 .chat-messages-wrapper {
+  padding: 1em;
   max-width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -279,4 +282,26 @@ body {
   z-index: 5;
   position: absolute;
   margin-top: 20rem;
+}
+
+.chat-profile-pic {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+}
+
+.chat-message-wrapper {
+  display: grid;
+  grid-template-rows: 0.2fr 1fr;
+  margin-top: 1em;
+}
+
+.message-this-user {
+  font-weight: bold;
+  text-align: right;
+}
+
+.message-other-user {
+  font-weight: bold;
+  text-align: left;
 }

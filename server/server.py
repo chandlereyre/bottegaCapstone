@@ -77,7 +77,7 @@ def createAccount():
     if db.user.find_one({'username': username}):
         return "user already exists"
     else:
-        db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': ""})
+        db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': "/img/defaultProfilePic.png"})
         return 'account created'
     
 @app.route("/update-account", methods = ['POST'])
@@ -104,10 +104,10 @@ def getChats():
                     otherUser = roomOBJ['users'][1]
                 else:
                     otherUser = roomOBJ['users'][0]
-                profilePic = db.user.find_one({'username': otherUser})['profilePic']
+                profilePic = "http://localhost:5000" + db.user.find_one({'username': otherUser})['profilePic']
                 data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': [otherUser], 'group': False}
             if len(roomOBJ['users']) > 2:
-                profilePic = "" # do something better here later
+                profilePic = "http://localhost:5000" + "/img/defaultProfilePic.png" # do something better here later
                 otherUsers = roomOBJ['users']
                 otherUsers.remove(username)
                 data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': otherUsers, 'group': True}
@@ -144,7 +144,11 @@ def getMessages():
 @app.route("/get-profile-pic", methods=['POST'])
 def getProfilePic():
     if db.user.find_one({'username': request.json['username']}):
-        return db.user.find_one({'username': request.json['username']})['profilePic']
+        profilePic = db.user.find_one({'username': request.json['username']})['profilePic']
+        if profilePic != "":
+            return "http://localhost:5000" + profilePic
+        else:
+            return "http://localhost:5000" + "/img/defaultProfilePic.png"
     else:
         return "user not found"
 

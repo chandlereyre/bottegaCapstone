@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 import { nanoid } from "nanoid";
 import axios from "axios";
+import profilePic from "../assets/profilePic.png";
 
 export default function Chat({
   username,
@@ -14,6 +15,7 @@ export default function Chat({
   const [socket, setSocket] = useState(null);
   const [messageData, setMessageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [profilePics, setProfilePics] = useState({});
 
   const ScrollToBottom = () => {
     const ref = useRef();
@@ -43,6 +45,22 @@ export default function Chat({
       .catch((err) => {
         console.log("Error getting messages for this chat: ", err);
       });
+
+    // get profile pictures
+    [username].concat(otherUsers).forEach((user) => {
+      axios({
+        url: "http://localhost:5000/get-profile-pic",
+        method: "post",
+        data: {
+          username: user,
+        },
+        withCredentials: true,
+      }).then((response) => {
+        const tempDict = profilePics;
+        tempDict[user] = response.data;
+        setProfilePics(tempDict);
+      });
+    });
 
     // socketio
     const newSocket = io("http://localhost:5000");
@@ -78,15 +96,39 @@ export default function Chat({
 
   function mapMessages() {
     const chatMSG = messageData.map((message) => {
-      const msgClass =
-        message.from == username ? "blue-message" : "grey-message";
-      const flexClass =
-        message.from == username ? "chat-flex-blue" : "chat-flex-grey";
-      return (
-        <div key={nanoid()} className={flexClass + " chat-flex"}>
-          <div className={msgClass + " chat-message"}>{message.message}</div>
-        </div>
-      );
+      if (message.from == username) {
+        return (
+          <div key={nanoid()} className="chat-message-wrapper">
+            <div className="message-this-user">{message.from}</div>
+            <div className="chat-flex-blue chat-flex">
+              <div className={"blue-message chat-message"}>
+                {message.message}
+              </div>
+              <img
+                className="chat-profile-pic"
+                src={profilePics[message.from]}
+              />
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div key={nanoid()} className="chat-message-wrapper">
+            <div className="chat-top">
+              <div className="message-other-user">{message.from}</div>
+            </div>
+            <div className="chat-flex-grey chat-flex">
+              <img
+                className="chat-profile-pic"
+                src={profilePics[message.from]}
+              />
+              <div className={" grey-message chat-message"}>
+                {message.message}
+              </div>
+            </div>
+          </div>
+        );
+      }
     });
 
     setChatMessages(chatMSG);

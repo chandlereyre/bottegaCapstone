@@ -31,7 +31,7 @@ export default function chatPreview({
     >
       <div className="message-profile-pic">
         {profilePic != "" ? (
-          <img src={"http://localhost:5000/" + profilePic}></img>
+          <img src={profilePic}></img>
         ) : (
           <img src={defaultProfilePic}></img>
         )}
