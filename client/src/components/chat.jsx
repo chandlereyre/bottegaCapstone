@@ -172,20 +172,44 @@ export default function Chat({
     });
   }
 
+  function groupChatName() {
+    let chatName = "Chat with ";
+    if (otherUsers.length == 2) {
+      chatName += otherUsers[0] + " and " + otherUsers[1] + ".";
+    } else if (otherUsers.length == 3) {
+      chatName +=
+        otherUsers[0] + ", " + otherUsers[1] + ", and " + otherUsers[2] + ".";
+    } else if (otherUsers.length > 3) {
+      chatName +=
+        otherUsers[0] +
+        ", " +
+        otherUsers[1] +
+        ", and " +
+        (otherUsers.length - 2) +
+        " others.";
+    }
+    return chatName;
+  }
+
   return (
     <div className="chat-wrapper">
       <div className="chat-top-bar">
+        <div className="chat-top-bar-space"></div>
         {otherUsers.length == 1 ? (
-          <div className="title">Chat with {otherUsers}</div>
+          <div className="chat-user-info">
+            <img
+              className="chat-profile-pic chat-top-pic"
+              src={profilePics[otherUsers]}
+            ></img>
+            <div className="chat-header">Chat with {otherUsers}</div>
+          </div>
         ) : (
-          <div className="group-title">
-            Chat with{" "}
-            {otherUsers[0] +
-              ", " +
-              otherUsers[1] +
-              ", and " +
-              (otherUsers.length - 2) +
-              " others."}
+          <div>
+            <img
+              className="chat-profile-pic chat-top-pic"
+              src={"http://localhost:5000/img/defaultGroupPic.png"}
+            ></img>
+            <div className="chat-header">{groupChatName()}</div>
           </div>
         )}
         <div className="chat-close" onClick={() => handleUpdateChat([])}>

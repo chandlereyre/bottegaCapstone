@@ -1,5 +1,6 @@
 import { React, Component } from "react";
 import { NavLink } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 import axios from "axios";
 
 class Login extends Component {
@@ -69,6 +70,9 @@ class Login extends Component {
             name="username"
             onChange={this.handleChange}
             value={this.state.username}
+            data-tooltip-id="login-tooltip"
+            data-tooltip-content="Your username"
+            data-tooltip-place="right"
           ></input>
           <input
             type="password"
@@ -78,6 +82,9 @@ class Login extends Component {
             onChange={this.handleChange}
             value={this.state.password}
             onKeyDown={this.handleKeyPress}
+            data-tooltip-id="login-tooltip"
+            data-tooltip-content="Your password"
+            data-tooltip-place="right"
           ></input>
           <button
             type="submit"
@@ -106,6 +113,7 @@ class Login extends Component {
             <p>{this.state.message}</p>
           </div>
         ) : null}
+        <Tooltip id="login-tooltip" style={{ zIndex: 8 }} />
       </div>
     );
   }

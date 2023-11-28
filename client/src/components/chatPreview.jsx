@@ -1,4 +1,3 @@
-import defaultProfilePic from "../assets/profilePic.png";
 import { useState, useEffect } from "react";
 
 export default function chatPreview({
@@ -22,6 +21,33 @@ export default function chatPreview({
     handleUpdateChat(users);
   }
 
+  function getPFPURL() {
+    let profilePicURL;
+
+    if (profilePic != "") {
+      profilePicURL = profilePic;
+    } else {
+      profilePicURL = "http://localhost:5000/img/defaultProfilePic.png";
+    }
+    if (group) {
+      profilePicURL = "http://localhost:5000/img/defaultGroupPic.png";
+    }
+    return profilePicURL;
+  }
+
+  function groupChatName() {
+    let chatName = "";
+    if (users.length == 2) {
+      chatName += users[0] + " and " + users[1] + ".";
+    } else if (users.length == 3) {
+      chatName += users[0] + ", " + users[1] + ", and " + users[2] + ".";
+    } else if (users.length > 3) {
+      chatName +=
+        users[0] + ", " + users[1] + ", and " + (users.length - 2) + " others.";
+    }
+    return chatName;
+  }
+
   return (
     <div
       className="message"
@@ -30,15 +56,11 @@ export default function chatPreview({
       }}
     >
       <div className="message-profile-pic">
-        {profilePic != "" ? (
-          <img src={profilePic}></img>
-        ) : (
-          <img src={defaultProfilePic}></img>
-        )}
+        <img src={getPFPURL()}></img>
       </div>
       <div className="message-content">
         {group ? (
-          <div className="person-name">{users.map((user) => user + ", ")}</div>
+          <div className="person-name">{groupChatName()}</div>
         ) : (
           <div className="person-name">{users}</div>
         )}

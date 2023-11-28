@@ -1,9 +1,9 @@
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import ChatPreview from "./chatPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatModal from "./chatModal";
 
-export default function MessageList({ handleUpdateChat, chatList, getChats }) {
+export default function ChatList({ handleUpdateChat, chatList, getChats }) {
   const [modal, setModal] = useState(false);
 
   function toggleModal(setModal, modal, newMessage) {

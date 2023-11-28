@@ -1,5 +1,6 @@
 import { React, Component } from "react";
 import { NavLink, Navigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 import axios from "axios";
 
 export default class Signup extends Component {
@@ -81,8 +82,9 @@ export default class Signup extends Component {
             name="username"
             onChange={this.handleChange}
             value={this.state.username}
-            data-tooltip-id="username-signup-tooltip"
-            data-tooltip-content="At least 6 characters"
+            data-tooltip-id="signup-tooltip"
+            data-tooltip-content="At least 6 characters, no dots or spaces"
+            data-tooltip-place="right"
           ></input>
           <input
             type="password"
@@ -91,6 +93,9 @@ export default class Signup extends Component {
             name="password"
             onChange={this.handleChange}
             value={this.state.password}
+            data-tooltip-id="signup-tooltip"
+            data-tooltip-content="At least 8 characters, no spaces"
+            data-tooltip-place="right"
           ></input>
           <input
             type="password"
@@ -100,6 +105,9 @@ export default class Signup extends Component {
             onChange={this.handleChange}
             value={this.state.confirmPassword}
             onKeyDown={this.handleKeyPress}
+            data-tooltip-id="signup-tooltip"
+            data-tooltip-content="Make sure the passwords match!"
+            data-tooltip-place="right"
           ></input>
           <button
             type="submit"
@@ -124,6 +132,7 @@ export default class Signup extends Component {
             <p>{this.state.errorMessage}</p>
           </div>
         ) : null}
+        <Tooltip id="signup-tooltip" style={{ zIndex: 8 }} />
       </div>
     );
   }
