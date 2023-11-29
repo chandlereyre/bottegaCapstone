@@ -27,7 +27,7 @@
 }
 
 .chatbox-wrapper {
-  border-top: 1px solid $outline;
+  border-top: 2px solid $outline;
 }
 
 .chatBox {
@@ -146,6 +146,10 @@
 .chat-top-pic {
   margin: 0px;
   transform: none;
+  cursor: pointer;
+  &:hover {
+    filter: brightness(0.8);
+  }
 }
 
 .chat-header {
@@ -156,4 +160,39 @@
 
 .chat-top-bar-space {
   width: 12px;
+}
+
+.chat-info-modal-wrapper {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  top: 4.2rem;
+  left: 3rem;
+  filter: drop-shadow(15px 10px 10px $shadow);
+}
+
+.chat-info-modal {
+  background-color: $background;
+  border-radius: 1em;
+  padding: 1em;
+  text-align: left;
+  padding-right: 1em;
+  .title {
+    color: white;
+    font-size: 18px;
+    text-align: center;
+  }
+  li {
+    color: white;
+    font-weight: bold;
+    list-style-type: "- ";
+  }
+}
+
+.bio {
+  color: white;
+  font-weight: bold;
+  line-height: 18px;
+  max-width: 300px;
 }

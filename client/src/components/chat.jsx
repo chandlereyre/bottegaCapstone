@@ -1,9 +1,10 @@
-import { React, useEffect, useState, useRef } from "react";
+import { React, useEffect, useState, useRef, useCallback } from "react";
 import ChatBox from "./chatBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import io from "socket.io-client";
 import { nanoid } from "nanoid";
 import axios from "axios";
+import ChatInfoModal from "./chatInfoModal";
 
 export default function Chat({
   username,
@@ -15,12 +16,24 @@ export default function Chat({
   const [messageData, setMessageData] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const [profilePics, setProfilePics] = useState({});
+  const [modal, setModal] = useState(false);
 
   const ScrollToBottom = () => {
     const ref = useRef();
     useEffect(() => ref.current.scrollIntoView());
     return <div ref={ref}></div>;
   };
+
+  const TopScroller = () => {
+    const topRef = useRef();
+    useEffect(() => topRef.current.addEventListener("scroll", handleScroll));
+    return <div ref={topRef}></div>;
+  };
+
+  function toggleModal() {
+    if (modal) setModal(false);
+    if (!modal) setModal(true);
+  }
 
   useEffect(() => {
     // get message history
@@ -93,6 +106,10 @@ export default function Chat({
       setMessageData([]);
     };
   }, []);
+
+  const handleScroll = useCallback(() => {
+    console.log("Scrolling");
+  });
 
   function mapMessages() {
     const chatMSG = messageData.map((message, index, array) => {
@@ -200,7 +217,8 @@ export default function Chat({
             <img
               className="chat-profile-pic chat-top-pic"
               src={profilePics[otherUsers]}
-            ></img>
+              onClick={() => toggleModal()}
+            />
             <div className="chat-header">Chat with {otherUsers}</div>
           </div>
         ) : (
@@ -208,6 +226,7 @@ export default function Chat({
             <img
               className="chat-profile-pic chat-top-pic"
               src={"http://localhost:5000/img/defaultGroupPic.png"}
+              onClick={() => toggleModal()}
             ></img>
             <div className="chat-header">{groupChatName()}</div>
           </div>
@@ -217,12 +236,19 @@ export default function Chat({
         </div>
       </div>
       <div className="chat-messages-wrapper">
+        <TopScroller />
         <div>{chatMessages}</div>
         <ScrollToBottom />
       </div>
       <div className="chatbox-wrapper">
         <ChatBox sendMessage={sendMessage} />
       </div>
+      {modal ? (
+        <ChatInfoModal
+          userList={[username].concat(otherUsers)}
+          group={otherUsers.length > 1}
+        />
+      ) : null}
     </div>
   );
 }
