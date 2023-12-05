@@ -26,7 +26,7 @@ export default function ChatList({ handleUpdateChat, chatList, getChats }) {
   });
 
   return (
-    <div className="messagelist-wrapper">
+    <div className="chatlist-wrapper">
       <div className="top-bar">
         <p className="title">Messages</p>
         <a className="icon">
@@ -36,8 +36,8 @@ export default function ChatList({ handleUpdateChat, chatList, getChats }) {
           />
         </a>
       </div>
-      <div className="message-divider"></div>
-      <div className="messagelist-content-wrapper">{chats}</div>
+      <div className="chatlist-divider"></div>
+      <div>{chats}</div>
 
       {modal ? (
         <ChatModal

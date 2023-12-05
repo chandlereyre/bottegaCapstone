@@ -1,9 +1,5 @@
-.messagelist-wrapper {
-  height: calc(100% - 4em);
+.chatlist-wrapper {
   padding: 2em;
-  // border-right: 1px solid $lightGrey;
-  position: sticky;
-  top: 0;
   z-index: 1;
 }
 
@@ -14,31 +10,30 @@
   align-items: center;
   .icon {
     font-size: 1.5rem;
-    :hover {
+    &:hover {
       color: $accent;
     }
   }
 }
 
-.message-divider {
+.chatlist-divider {
   width: 90%;
   border-bottom: 2px solid $lightGrey;
   margin-bottom: 2rem;
 }
 
-.message {
+.chat-preview-wrapper {
   display: grid;
   grid-template-columns: 40px 1fr;
   gap: 1rem;
   width: 100%;
-  // height: 80px;
   margin-bottom: 1rem;
   text-align: left;
   cursor: pointer;
   .person-name {
     font-weight: bold;
   }
-  .message-profile-pic {
+  .chat-preview-pfp {
     width: 100%;
     height: 40px;
     border-radius: 50%;
@@ -53,5 +48,12 @@
   }
   .text {
     color: $messageGrey;
+  }
+}
+
+@media (max-width: 480px) {
+  .chatlist-wrapper {
+    width: calc(100vw - 4em);
+    padding-top: 90px;
   }
 }

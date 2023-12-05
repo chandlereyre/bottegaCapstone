@@ -28,7 +28,7 @@
   margin-bottom: 3rem;
   .icon {
     height: 30px;
-    :hover {
+    &:hover {
       color: $accent;
     }
   }

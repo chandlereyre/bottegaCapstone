@@ -25,13 +25,11 @@ export default function Main(props) {
 
       webSocket.on("chatMessage", (data) => {
         updateMessages(data);
-        console.log(data);
       });
     }
 
     return () => {
       if (webSocket) {
-        console.log("leaving websocket");
         Object.keys(msgListChats).forEach((message) => {
           webSocket.emit("leaveWithRoom", {
             room: message,

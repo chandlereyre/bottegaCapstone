@@ -50,15 +50,15 @@ export default function chatPreview({
 
   return (
     <div
-      className="message"
+      className="chat-preview-wrapper"
       onClick={() => {
         updateChat();
       }}
     >
-      <div className="message-profile-pic">
+      <div className="chat-preview-pfp">
         <img src={getPFPURL()}></img>
       </div>
-      <div className="message-content">
+      <div>
         {group ? (
           <div className="person-name">{groupChatName()}</div>
         ) : (

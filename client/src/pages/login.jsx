@@ -55,7 +55,6 @@ class Login extends Component {
       .catch((err) => {
         console.log("Error logging in: ", err);
       });
-    event.preventDefault();
   }
 
   render() {

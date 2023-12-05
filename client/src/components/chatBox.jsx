@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function chatBox({ sendMessage }) {
   const [message, setMessage] = useState("");
@@ -32,7 +33,7 @@ export default function chatBox({ sendMessage }) {
         className="chat-button"
         onClick={() => handleMessage(sendMessage)}
       >
-        Send
+        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
       </button>
     </div>
   );

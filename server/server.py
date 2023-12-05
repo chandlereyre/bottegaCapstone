@@ -162,6 +162,7 @@ def getProfileInfo():
         responseData = {
             "username": userData['username'],
             "bio": userData['bio'],
+            "profilePic": userData['profilePic']
         }
         return responseData
     else:

@@ -11,11 +11,8 @@ body {
 }
 
 .main-wrapper {
-  width: 100vw;
-  height: 150vh;
   display: grid;
   grid-template-columns: 80px 1fr;
-  position: fixed;
 }
 
 // general styles
@@ -68,5 +65,14 @@ body {
   }
   div {
     color: $messageGrey;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-wrapper {
+    display: block;
+  }
+  .main-filler {
+    display: none;
   }
 }

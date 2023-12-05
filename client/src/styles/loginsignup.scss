@@ -107,3 +107,9 @@
   font-weight: bold;
   box-shadow: -5px 5px 40px $shadow;
 }
+
+@media (max-width: 480px) {
+  .modal-bg {
+    display: none;
+  }
+}

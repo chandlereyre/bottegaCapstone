@@ -6,12 +6,11 @@
   max-width: 100%;
   box-shadow: 0px 0px 50px 0px $shadow;
   border-radius: 2rem 2rem 0rem 0rem;
-  // z-index: 5;
+  background-color: white;
   overflow: hidden;
 }
 
 .chat-top-bar {
-  border-bottom: 1px solid $outline;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,7 +30,6 @@
 }
 
 .chatBox {
-  // width: calc(100% - 2rem);
   height: 100%;
   display: grid;
   grid-template-columns: 8fr 1fr;
@@ -195,4 +193,13 @@
   font-weight: bold;
   line-height: 18px;
   max-width: 300px;
+}
+
+@media (max-width: 480px) {
+  .chat-wrapper {
+    position: fixed;
+    z-index: 10;
+    border-radius: 0px;
+    width: 100vw;
+  }
 }

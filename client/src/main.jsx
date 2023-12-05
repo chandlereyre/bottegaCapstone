@@ -10,6 +10,7 @@ import {
   faX,
   faCamera,
   faPlus,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import App from "./App.jsx";
 
@@ -21,7 +22,8 @@ library.add(
   faPenToSquare,
   faX,
   faCamera,
-  faPlus
+  faPlus,
+  faBars
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
