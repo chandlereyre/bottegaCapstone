@@ -41,6 +41,10 @@ export default function Main(props) {
     };
   }, [props.type]);
 
+  /**
+   * Opens a chat with a given user
+   * @param {*} users arr of potential users to chat with
+   */
   async function handleUpdateChat(users) {
     // for 2 people
     if (users.length == 1) {
@@ -57,6 +61,9 @@ export default function Main(props) {
     }
   }
 
+  /**
+   * Gets list of potential users to chat with
+   */
   function getChats() {
     axios({
       url: "http://localhost:5000/get-chats",
@@ -71,6 +78,10 @@ export default function Main(props) {
       });
   }
 
+  /**
+   * Updates chatList preview messages
+   * @param {*} data
+   */
   function updateMessages(data) {
     let tempArray = msgListChats;
     Object.keys(tempArray).forEach((key) => {

@@ -36,6 +36,7 @@ export default function Chat({
   useEffect(() => {
     // get messages
     setIsLoading(true);
+
     axios({
       url: "http://localhost:5000/get-messages",
       method: "post",
@@ -75,8 +76,7 @@ export default function Chat({
               tempDict[user] = response.data;
               setProfilePics(tempDict);
 
-              mapMessages(messageData);
-              scrollToBottom();
+              mapMessages(messageData, true);
               setIsLoading(false);
             });
         });
@@ -97,11 +97,8 @@ export default function Chat({
       tempArray.push(data);
       setMessageData(tempArray);
 
-      mapMessages(tempArray);
+      mapMessages(tempArray, true);
       updateMessages(otherUsers, data);
-      setTimeout(function () {
-        scrollToBottom();
-      }, 50);
     });
 
     setSocket(newSocket);
@@ -125,8 +122,12 @@ export default function Chat({
     if (scrollRef.current.scrollTop == 0) {
       if (messageData.length < messageCount) {
         // get next page of messages
+
+        setIsLoading(true);
+        const beforeHeight = scrollRef.current.scrollHeight;
+        console.log(beforeHeight);
+
         setTimeout(() => {
-          setIsLoading(true);
           axios({
             url: "http://localhost:5000/get-messages",
             method: "post",
@@ -135,19 +136,27 @@ export default function Chat({
               page: pageCounter,
             },
             withCredentials: true,
-          }).then((response) => {
-            setPageCounter(pageCounter + 1);
+          })
+            .then((response) => {
+              setPageCounter(pageCounter + 1);
 
-            let tempArray = [];
+              let tempArray = [];
 
-            response.data.messages.forEach((message) => {
-              tempArray.push(message);
+              response.data.messages.forEach((message) => {
+                tempArray.push(message);
+              });
+
+              setMessageData(tempArray.concat(messageData));
+              mapMessages(tempArray.concat(messageData));
+              setIsLoading(false);
+            })
+            .then(() => {
+              setTimeout(() => {
+                const afterHeight = scrollRef.current.scrollHeight;
+                console.log(afterHeight);
+                scrollRef.current.scrollTo(0, afterHeight - beforeHeight);
+              }, 50);
             });
-
-            setMessageData(tempArray.concat(messageData));
-            mapMessages(tempArray.concat(messageData));
-            setIsLoading(false);
-          });
         }, 1000);
       }
     }
@@ -156,7 +165,7 @@ export default function Chat({
   /**
    * Maps messages from the messageData array to divs to be rendered
    */
-  function mapMessages(messageArr) {
+  function mapMessages(messageArr, scroll) {
     let chatMSG = messageArr.map((message, index, array) => {
       // check when to assign a profile pic / header
       let useProfilePic = false;
@@ -222,7 +231,12 @@ export default function Chat({
         );
       }
     });
+
     setChatMessages(chatMSG);
+
+    if (messageArr.length == chatMSG.length && scroll) {
+      setTimeout(() => scrollToBottom(), 50);
+    }
   }
 
   function sendMessage(message) {
