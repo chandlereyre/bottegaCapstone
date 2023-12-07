@@ -125,7 +125,6 @@ export default function Chat({
 
         setIsLoading(true);
         const beforeHeight = scrollRef.current.scrollHeight;
-        console.log(beforeHeight);
 
         setTimeout(() => {
           axios({
@@ -153,7 +152,6 @@ export default function Chat({
             .then(() => {
               setTimeout(() => {
                 const afterHeight = scrollRef.current.scrollHeight;
-                console.log(afterHeight);
                 scrollRef.current.scrollTo(0, afterHeight - beforeHeight);
               }, 50);
             });
