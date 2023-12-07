@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import Sidebar from "../components/sidebar";
@@ -10,26 +10,45 @@ import logo from "../assets/chat.png";
 export default function Main(props) {
   const [activeChat, setActiveChat] = useState([]);
   const [msgListChats, setMsgListChats] = useState([]);
+  const listRef = useRef();
 
   useEffect(() => {
-    props.type == "home" ? getChats() : null;
-    let webSocket;
+    // props.type == "home" ? getChats() : null;
+
+    let webSocket = null;
+
     if (props.type == "home") {
-      webSocket = io("http://localhost:5000");
+      axios({
+        url: "http://localhost:5000/get-chats",
+        method: "get",
+        withCredentials: true,
+      })
+        .then((response) => {
+          setMsgListChats(response.data);
 
-      Object.keys(msgListChats).forEach((message) => {
-        webSocket.emit("joinWithRoom", {
-          room: message,
+          webSocket = io("http://localhost:5000");
+
+          webSocket.on("chatMessage", (data) => {
+            console.log(data);
+            updateMessages(data);
+          });
+
+          Object.keys(response.data).forEach((message) => {
+            webSocket.emit("joinWithRoom", {
+              room: message,
+            });
+            console.log("joining rooms");
+          });
+
+          listRef.current = response.data;
+        })
+        .catch((error) => {
+          console.log("Error getting chats: ", error);
         });
-      });
-
-      webSocket.on("chatMessage", (data) => {
-        updateMessages(data);
-      });
     }
 
     return () => {
-      if (webSocket) {
+      if (webSocket != null) {
         Object.keys(msgListChats).forEach((message) => {
           webSocket.emit("leaveWithRoom", {
             room: message,
@@ -40,6 +59,25 @@ export default function Main(props) {
       }
     };
   }, [props.type]);
+
+  /**
+   * Updates chatList preview messages
+   * @param {*} data
+   */
+  function updateMessages(data) {
+    let tempArray = listRef.current;
+    console.log(tempArray);
+
+    Object.keys(tempArray).forEach((key) => {
+      console.log("updating rooms");
+      console.log(key);
+      if (key == data.room) {
+        console.log("updating");
+        tempArray[key].lastMessage = data.message;
+      }
+    });
+    setMsgListChats({ ...tempArray });
+  }
 
   /**
    * Opens a chat with a given user
@@ -71,25 +109,11 @@ export default function Main(props) {
       withCredentials: true,
     })
       .then((response) => {
-        setMsgListChats(response.data);
+        setMsgListChats({ ...response.data });
       })
       .catch((error) => {
         console.log("Error getting chats: ", error);
       });
-  }
-
-  /**
-   * Updates chatList preview messages
-   * @param {*} data
-   */
-  function updateMessages(data) {
-    let tempArray = msgListChats;
-    Object.keys(tempArray).forEach((key) => {
-      if (key == data.room) {
-        tempArray[key].lastMessage = data.message;
-      }
-    });
-    setMsgListChats({ ...tempArray });
   }
 
   function handleLogout() {

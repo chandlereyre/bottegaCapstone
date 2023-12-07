@@ -98,7 +98,7 @@ export default function Chat({
       setMessageData(tempArray);
 
       mapMessages(tempArray, true);
-      updateMessages(otherUsers, data);
+      updateMessages(data);
     });
 
     setSocket(newSocket);
