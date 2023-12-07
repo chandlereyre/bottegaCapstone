@@ -3,24 +3,29 @@ import axios from "axios";
 
 export default function ChatInfoModal({ userList, group }) {
   const [bio, setBio] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!group) {
+      setIsLoading(true);
       axios({
         url: "http://localhost:5000/get-profile-info",
         method: "post",
         data: { username: userList[1] },
         withCredentials: true,
       }).then((response) => {
-        console.log(response.data);
         setBio(response.data.bio);
+        setIsLoading(false);
       });
     }
-  });
+  }, []);
+
   return (
     <div className="chat-info-modal-wrapper">
       <div className="chat-info-modal">
-        {group ? (
+        {isLoading ? (
+          <div className="loader"></div>
+        ) : group ? (
           <div className="title">Members</div>
         ) : (
           <div className="title">{userList[1]}</div>
@@ -38,6 +43,7 @@ export default function ChatInfoModal({ userList, group }) {
         ) : (
           <div className="bio">{bio}</div>
         )}
+        {}
       </div>
     </div>
   );

@@ -27,36 +27,40 @@ Session(app)
 # Create socketIO
 socketio = SocketIO(app, cors_allowed_origins="*", manage_session=False)
 
-
 @app.route("/auth/login", methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.json['username']
         password = request.json['password']
+
         # check if username & password combination exists in mongoDB
         if db.user.find_one({'username': username, 'password': password}):
-            # add user to session
             session['username'] = username
             return 'session created'
+        
         elif db.user.find_one({'username': username}):
             return 'incorrect password'
+        
         else:
             return 'user not found'
         
     if request.method == 'GET':
         data = {}
+
         if 'username' in session:
             data = {
                 "loggedIn": True,
                 "username": session.get('username', None)
             }
             return data
+        
         else:
             data = {
                 "loggedIn": False,
                 "username": None
             }
             return data
+        
     return ''
 
 @app.route("/auth/logout", methods = ['DELETE'])
@@ -68,6 +72,7 @@ def logout():
 def checkUser():
     if db.user.find_one({'username': request.json['username']}):
         return "user found"
+    
     else:
         return "user not found"
     
@@ -75,43 +80,48 @@ def checkUser():
 def createAccount():
     username = request.json['username']
     password = request.json['password']
+
     if db.user.find_one({'username': username}):
         return "user already exists"
+    
     else:
         db.user.insert_one({'username': username, 'password': password, 'bio': "", 'chats': [], 'profilePic': "/img/defaultProfilePic.png"})
         return 'account created'
-    
-@app.route("/update-account", methods = ['POST'])
-def updateAccount():
-    # TODO update account
-    return "account updated"
     
 @app.route("/get-chats", methods = ['GET'])
 def getChats():
     username = session.get('username', None)
     data = {}
     chats = db.user.find_one({'username': username})["chats"]
+
     for room in chats:
         lastMessage = ""
         profilePic = ""
+
         if db.chats.find_one({'room': room}):
             roomOBJ = db.chats.find_one({'room': room})
+
             if len(roomOBJ['messages']) > 0:
                 lastMessage = roomOBJ['messages'][-1]['message']
+
             # for 2 users
             if len(roomOBJ['users']) == 2:
                 otherUser = ""
+
                 if roomOBJ['users'][0] == username:
                     otherUser = roomOBJ['users'][1]
+
                 else:
                     otherUser = roomOBJ['users'][0]
                 profilePic = "http://localhost:5000" + db.user.find_one({'username': otherUser})['profilePic']
                 data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': [otherUser], 'group': False}
+            
             if len(roomOBJ['users']) > 2:
                 profilePic = "http://localhost:5000" + "/img/defaultProfilePic.png" # do something better here later
                 otherUsers = roomOBJ['users']
                 otherUsers.remove(username)
                 data[room] = {'lastMessage': lastMessage, 'profilePic': profilePic, 'with': otherUsers, 'group': True}
+    
     return data
 
 @app.route("/create-chat", methods = ['POST'])
@@ -129,34 +139,56 @@ def createChat():
             chats = db.user.find_one({'username': user})["chats"]
             chats.append(room)
             db.user.update_one({'username': user}, {"$set": {"chats": chats}})
-    db.chats.insert_one({'room': room, 'messages': [], 'users': recipientsArr, 'profilePic': ""})
 
+    db.chats.insert_one({'room': room, 'messages': [], 'users': recipientsArr, 'profilePic': ""})
     return "Chat created"
     
 @app.route("/get-messages", methods = ['POST'])
 def getMessages():
     room = computeRoom(request.json['users'])
+    page = request.json['page']
+
+    print(page)
+
     if db.chats.find_one({'room': room}):
-        messages = db.chats.find_one({'room': room})['messages']
-        return messages
+        messagesArr = db.chats.find_one({'room': room})['messages']
+        length = len(messagesArr)
+
+        startIndex = length - page * 20 - 20
+        endIndex = length - page * 20
+
+        if startIndex < 0:
+            print("length out of bounds")
+            messages = messagesArr[0:endIndex]
+            print("messages length: " + str(len(messages)))
+
+        else:
+            messages = messagesArr[startIndex:endIndex]
+            print("messages length: " + str(len(messages)))
+
+        return {"messages": messages, "messageCount": len(messagesArr)}
+    
     else:
-        return []
+        return {"messages": [], "messageCount": 0}
 
 @app.route("/get-profile-pic", methods=['POST'])
 def getProfilePic():
     if db.user.find_one({'username': request.json['username']}):
         profilePic = db.user.find_one({'username': request.json['username']})['profilePic']
+
         if profilePic != "":
             return "http://localhost:5000" + profilePic
+        
         else:
             return "http://localhost:5000" + "/img/defaultProfilePic.png"
+        
     else:
         return "user not found"
-
     
 @app.route("/get-profile-info", methods=['POST'])
 def getProfileInfo():
     user = request.json['username']
+
     if db.user.find_one({'username': user}):
         userData = db.user.find_one({'username': user})
         responseData = {
@@ -165,6 +197,7 @@ def getProfileInfo():
             "profilePic": userData['profilePic']
         }
         return responseData
+    
     else:
         return "user not found"
 
@@ -191,9 +224,11 @@ def updateProfile():
         if db.user.find_one({'username': user}):
             db.user.update_one({'username': user}, {'$set': {'bio': bio, 'profilePic': f'/img/{user}.{file_type}'}})
             return "user updated"
+        
     if db.user.find_one({'username': user}):
         db.user.update_one({'username': user}, {'$set': {'bio': bio}})
         return "user updated"
+    
     else:
         return "user not found"
     
@@ -239,8 +274,10 @@ def handle_message(data):
 def computeRoom(users):
     users.sort()
     room = ""
+
     for user in users:
         room += user
+        
     return room
 
 if __name__ == '__main__':  

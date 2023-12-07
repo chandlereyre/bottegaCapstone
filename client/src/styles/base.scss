@@ -13,9 +13,31 @@ body {
 .main-wrapper {
   display: grid;
   grid-template-columns: 80px 1fr;
+  position: fixed;
+  width: 100vw;
 }
 
 // general styles
+
+.loader {
+  border: 2px solid $lightGrey;
+  border-top: 2px solid $accent;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+  margin-top: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .title {
   text-align: left;

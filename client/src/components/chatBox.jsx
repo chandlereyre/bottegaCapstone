@@ -33,7 +33,7 @@ export default function chatBox({ sendMessage }) {
         className="chat-button"
         onClick={() => handleMessage(sendMessage)}
       >
-        <FontAwesomeIcon icon="fa-solid fa-right-from-bracket" />
+        <FontAwesomeIcon icon="fa-solid fa-paper-plane" />
       </button>
     </div>
   );

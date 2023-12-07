@@ -17,17 +17,15 @@ export default function Chat({
   const [chatMessages, setChatMessages] = useState([]);
   const [profilePics, setProfilePics] = useState({});
   const [modal, setModal] = useState(false);
+  const [messageCount, setMessageCount] = useState(0);
+  const [pageCounter, setPageCounter] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const ScrollToBottom = () => {
-    const ref = useRef();
-    useEffect(() => ref.current.scrollIntoView());
-    return <div ref={ref}></div>;
-  };
+  const scrollRef = useRef();
+  const bottomRef = useRef();
 
-  const TopScroller = () => {
-    const topRef = useRef();
-    useEffect(() => topRef.current.addEventListener("scroll", handleScroll));
-    return <div ref={topRef}></div>;
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView();
   };
 
   function toggleModal() {
@@ -36,24 +34,32 @@ export default function Chat({
   }
 
   useEffect(() => {
-    // get message history
+    // get messages
+    setIsLoading(true);
     axios({
       url: "http://localhost:5000/get-messages",
       method: "post",
       data: {
         users: [username].concat(otherUsers),
+        page: pageCounter,
       },
       withCredentials: true,
     })
-      .then((data) => {
+      // put messages in messageData array
+      .then((response) => {
+        setPageCounter(pageCounter + 1);
+
+        setMessageCount(response.data.messageCount);
+
         let tempArray = messageData;
-        data.data.forEach((message) => {
+        response.data.messages.forEach((message) => {
           tempArray.push(message);
         });
+
         setMessageData(tempArray);
       })
+      // get profile pictures
       .then(() => {
-        // get profile pictures
         [username].concat(otherUsers).forEach((user) => {
           axios({
             url: "http://localhost:5000/get-profile-pic",
@@ -62,13 +68,17 @@ export default function Chat({
               username: user,
             },
             withCredentials: true,
-          }).then((response) => {
-            const tempDict = profilePics;
-            tempDict[user] = response.data;
-            setProfilePics(tempDict);
+          })
+            // set profile pics and render message divs
+            .then((response) => {
+              const tempDict = profilePics;
+              tempDict[user] = response.data;
+              setProfilePics(tempDict);
 
-            mapMessages();
-          });
+              mapMessages(messageData);
+              scrollToBottom();
+              setIsLoading(false);
+            });
         });
       })
       .catch((err) => {
@@ -87,9 +97,11 @@ export default function Chat({
       tempArray.push(data);
       setMessageData(tempArray);
 
-      mapMessages();
-
+      mapMessages(tempArray);
       updateMessages(otherUsers, data);
+      setTimeout(function () {
+        scrollToBottom();
+      }, 50);
     });
 
     setSocket(newSocket);
@@ -102,17 +114,50 @@ export default function Chat({
       if (newSocket) {
         newSocket.disconnect();
       }
-
-      setMessageData([]);
     };
   }, []);
 
+  /**
+   * Scroll Handler
+   * Gets new messages if there are more to get on scroll to top
+   */
   const handleScroll = useCallback(() => {
-    console.log("Scrolling");
+    if (scrollRef.current.scrollTop == 0) {
+      if (messageData.length < messageCount) {
+        // get next page of messages
+        setTimeout(() => {
+          setIsLoading(true);
+          axios({
+            url: "http://localhost:5000/get-messages",
+            method: "post",
+            data: {
+              users: [username].concat(otherUsers),
+              page: pageCounter,
+            },
+            withCredentials: true,
+          }).then((response) => {
+            setPageCounter(pageCounter + 1);
+
+            let tempArray = [];
+
+            response.data.messages.forEach((message) => {
+              tempArray.push(message);
+            });
+
+            setMessageData(tempArray.concat(messageData));
+            mapMessages(tempArray.concat(messageData));
+            setIsLoading(false);
+          });
+        }, 1000);
+      }
+    }
   });
 
-  function mapMessages() {
-    const chatMSG = messageData.map((message, index, array) => {
+  /**
+   * Maps messages from the messageData array to divs to be rendered
+   */
+  function mapMessages(messageArr) {
+    let chatMSG = messageArr.map((message, index, array) => {
       // check when to assign a profile pic / header
       let useProfilePic = false;
       let useHeader = false;
@@ -177,7 +222,6 @@ export default function Chat({
         );
       }
     });
-
     setChatMessages(chatMSG);
   }
 
@@ -189,6 +233,10 @@ export default function Chat({
     });
   }
 
+  /**
+   * Generates a name for a group chat
+   * @returns A string for this group chat's header
+   */
   function groupChatName() {
     let chatName = "Chat with ";
     if (otherUsers.length == 2) {
@@ -235,11 +283,16 @@ export default function Chat({
           <FontAwesomeIcon icon="fa-solid fa-x" />
         </div>
       </div>
-      <div className="chat-messages-wrapper">
-        <TopScroller />
-        <div>{chatMessages}</div>
-        <ScrollToBottom />
+      <div
+        className="chat-messages-wrapper"
+        onScroll={handleScroll}
+        ref={scrollRef}
+      >
+        {isLoading ? <div className="loader"></div> : null}
+        {chatMessages}
+        <div ref={bottomRef}></div>
       </div>
+
       <div className="chatbox-wrapper">
         <ChatBox sendMessage={sendMessage} />
       </div>

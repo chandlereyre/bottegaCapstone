@@ -3,7 +3,6 @@
   display: grid;
   height: 100vh;
   grid-template-rows: 6rem 10fr 4rem;
-  max-width: 100%;
   box-shadow: 0px 0px 50px 0px $shadow;
   border-radius: 2rem 2rem 0rem 0rem;
   background-color: white;
@@ -113,7 +112,8 @@
   padding: 1em;
   max-width: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
+  bottom: 0;
 }
 
 .chat-profile-pic {
